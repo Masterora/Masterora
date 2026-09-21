@@ -22,13 +22,13 @@
 
 ### Engineering DNA
 
-**01 / Think in systems**  
+**01 / Think in systems**<br />
 从业务约束出发，理解数据、状态与边界，设计能够演进的架构。
 
-**02 / Build AI with control**  
+**02 / Build AI with control**<br />
 把模型能力放进清晰的工程边界：工具受控、结果可核查、过程可观测。
 
-**03 / Own the whole loop**  
+**03 / Own the whole loop**<br />
 贯通后端、界面与交付。代码之外，同样重视用户体验、运行方式和验证依据。
 
 ### Technical ground
