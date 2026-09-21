@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="220" viewBox="0 0 1200 220" role="img" aria-labelledby="title">
+<title id="title">Der Orange · Backend / AI</title>
+<style>
+.orbit{transform-origin:1060px 110px;animation:rotate 24s linear infinite}
+@keyframes rotate{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.orbit{animation:none}}
+</style>
+<rect width="1200" height="220" rx="16" fill="#111820"/>
+<g font-family="Arial,Helvetica,sans-serif">
+<text x="48" y="105" font-size="52" font-weight="600" fill="#edf0f3">Der Orange</text>
+<text x="50" y="150" font-size="19" fill="#9ba8b5">Backend / AI</text>
+</g>
+<circle cx="1060" cy="110" r="34" fill="#ed9958"/>
+<circle cx="1060" cy="110" r="62" fill="none" stroke="#45515c" stroke-width="1"/>
+<g class="orbit"><circle cx="1060" cy="48" r="4" fill="#ed9958"/></g>
+</svg>
