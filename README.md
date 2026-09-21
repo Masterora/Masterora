@@ -13,7 +13,7 @@
 <img src="./assets/flow.svg" width="100%" alt="" />
 
 <p align="center">
-  <img src="./assets/terminal.svg" width="100%" alt="Build reliable systems. Engineer intelligence. Ship with intent." />
+  <img src="./assets/terminal-typing.svg" width="100%" alt="Build reliable systems. Engineer intelligence. Ship with intent." />
 </p>
 
 ### About me
