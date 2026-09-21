@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="30" viewBox="0 0 1200 30" role="img" aria-label="Animated orange and cyan light trails">
+<defs><linearGradient id="line"><stop stop-color="#ff993f" stop-opacity="0"/><stop offset=".5" stop-color="#ff993f"/><stop offset="1" stop-color="#75e4ed" stop-opacity="0"/></linearGradient></defs>
+<style>.a{animation:flow 5s linear infinite}.b{animation:flow 7s linear infinite reverse}@keyframes flow{from{transform:translateX(-300px)}to{transform:translateX(1200px)}}@media(prefers-reduced-motion:reduce){*{animation:none!important}.a{transform:translateX(300px)}.b{transform:translateX(650px)}}</style>
+<path d="M0 15H1200" stroke="#497285" stroke-opacity=".2"/><path class="a" d="M0 15h280" stroke="url(#line)" stroke-width="2"/><path class="b" d="M0 15h160" stroke="url(#line)" stroke-width="2"/>
+</svg>

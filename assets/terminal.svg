@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="110" viewBox="0 0 1000 110" role="img" aria-labelledby="title">
+<title id="title">Build reliable systems. Engineer intelligence. Ship with intent.</title>
+<defs><clipPath id="typing"><rect class="type" x="68" y="0" width="880" height="110"/></clipPath></defs>
+<style>
+.type{animation:type 9s steps(60,end) infinite}.caret{animation:blink 1s steps(2,end) infinite}.dot{animation:pulse 3s ease-in-out infinite}
+@keyframes type{0%{width:0}65%,90%{width:880}100%{width:0}}@keyframes blink{50%{opacity:0}}@keyframes pulse{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<rect x="1" y="1" width="998" height="108" rx="14" fill="#0c1422" stroke="#263b50"/>
+<circle cx="23" cy="22" r="4" fill="#ff9171"/><circle cx="38" cy="22" r="4" fill="#ffd16d"/><circle class="dot" cx="53" cy="22" r="4" fill="#70e6b7"/>
+<text x="973" y="27" text-anchor="end" font-family="monospace" font-size="12" fill="#7f98ad">orange@world:~</text>
+<text x="28" y="73" font-family="monospace" font-size="22" fill="#ffb365">❯</text>
+<g clip-path="url(#typing)"><text x="68" y="73" font-family="monospace" font-size="20" fill="#afe7ed">Build reliable systems. Engineer intelligence. Ship with intent.</text></g>
+<path class="caret" d="M962 56v21" stroke="#ffb365" stroke-width="9"/>
+</svg>

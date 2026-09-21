@@ -10,7 +10,11 @@
 
 </div>
 
----
+<img src="./assets/flow.svg" width="100%" alt="" />
+
+<p align="center">
+  <img src="./assets/terminal.svg" width="100%" alt="Build reliable systems. Engineer intelligence. Ship with intent." />
+</p>
 
 ### About me
 
@@ -40,7 +44,7 @@
 | **Data & Infrastructure** | PostgreSQL · Redis · 消息队列 · 向量检索 · Docker |
 | **Product Development** | TypeScript · React · 交互设计 · 端到端交付 |
 
----
+<img src="./assets/flow.svg" width="100%" alt="" />
 
 <div align="center">
   <strong>Think deeply. Build precisely. Ship deliberately.</strong><br />
