@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="520" viewBox="0 0 1000 520" role="img" aria-labelledby="title desc">
+<title id="title">Der_Orange technology terminal</title>
+<desc id="desc">An animated cyberpunk terminal presenting eighteen technologies with glitch, laser, particles and rotating holographic effects.</desc>
+<defs>
+  <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 1h4" stroke="#c2ffe8" stroke-opacity=".035"/></pattern>
+  <pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#55ffae" stroke-opacity=".05"/></pattern>
+  <linearGradient id="edge"><stop stop-color="#67ffb2"/><stop offset=".48" stop-color="#2bddeb"/><stop offset=".78" stop-color="#ff4b9f"/><stop offset="1" stop-color="#ff9a4f"/></linearGradient>
+  <linearGradient id="name"><stop stop-color="#f0fff6"/><stop offset=".52" stop-color="#63ffb2"/><stop offset="1" stop-color="#2ddde9"/></linearGradient>
+  <linearGradient id="laser"><stop stop-color="#2ddde9" stop-opacity="0"/><stop offset=".5" stop-color="#2ddde9" stop-opacity=".7"/><stop offset="1" stop-color="#2ddde9" stop-opacity="0"/></linearGradient>
+  <radialGradient id="core"><stop stop-color="#63ffb2" stop-opacity=".36"/><stop offset=".55" stop-color="#2ddde9" stop-opacity=".12"/><stop offset="1" stop-color="#07100d" stop-opacity="0"/></radialGradient>
+  <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <clipPath id="frame"><path d="M18 1H970L999 30V488L967 519H1V18Z"/></clipPath>
+  <clipPath id="typed"><rect class="type-mask" x="188" y="55" width="113" height="31"/></clipPath>
+  <clipPath id="name-slice"><rect x="34" y="139" width="560" height="18"/></clipPath>
+</defs>
+<style>
+  .type-mask{transform-origin:188px 0;animation:type 8s steps(6,end) infinite}.type-cursor{animation:type-cursor 8s steps(6,end) infinite}.blink{animation:blink 1s steps(1,end) infinite}
+  .name{animation:name-in 8s linear infinite}.glitch-a{animation:glitch-a 5s steps(1,end) infinite}.glitch-b{animation:glitch-b 9s steps(1,end) infinite}
+  .ring-a{transform-origin:824px 119px;animation:spin 7s linear infinite}.ring-b{transform-origin:824px 119px;animation:spin 13s linear infinite reverse}.ring-c{transform-origin:824px 119px;animation:spin 21s linear infinite}
+  .laser{animation:laser 5.4s linear infinite}.sweep{animation:sweep 8s linear infinite}.packet{stroke-dasharray:12 160;animation:packet 5s linear infinite}
+  .chip{animation:chip 3.8s ease-in-out infinite}.chip-2{animation-delay:-.6s}.chip-3{animation-delay:-1.2s}.chip-4{animation-delay:-1.8s}.chip-5{animation-delay:-2.4s}.chip-6{animation-delay:-3s}
+  .row-a{animation:row-a 7s ease-in-out infinite}.row-b{animation:row-b 9s ease-in-out infinite}.row-c{animation:row-c 8s ease-in-out infinite}.spark{animation:spark 2.6s ease-in-out infinite}.spark-b{animation-delay:-1.3s}
+  @keyframes type{0%,7%{transform:scaleX(0)}23%,96%{transform:scaleX(1)}100%{transform:scaleX(0)}}@keyframes type-cursor{0%,7%{transform:translateX(0)}23%,96%{transform:translateX(113px)}100%{transform:translateX(0)}}
+  @keyframes name-in{0%,23%{opacity:0}28%,96%{opacity:1}100%{opacity:0}}@keyframes blink{50%{opacity:0}}@keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes glitch-a{0%,39%,43%,100%{opacity:0;transform:translate(0)}40%{opacity:.9;transform:translate(9px,-2px)}41%{opacity:.45;transform:translate(-6px,2px)}}
+  @keyframes glitch-b{0%,69%,73%,100%{opacity:0;transform:translate(0)}70%{opacity:.8;transform:translate(-8px,1px)}71%{opacity:.38;transform:translate(5px,-1px)}}
+  @keyframes laser{from{transform:translateX(-90px)}to{transform:translateX(1020px)}}@keyframes sweep{from{transform:translateY(-90px)}to{transform:translateY(610px)}}@keyframes packet{to{stroke-dashoffset:-344}}
+  @keyframes chip{0%,100%{opacity:.62}50%{opacity:1;filter:url(#glow)}}@keyframes row-a{50%{transform:translateX(5px)}}@keyframes row-b{50%{transform:translateX(-5px)}}@keyframes row-c{50%{transform:translateX(4px)}}
+  @keyframes spark{50%{opacity:.18;transform:scale(.55)}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important}.glitch-a,.glitch-b,.laser,.sweep{display:none}.type-cursor{transform:translateX(113px)}}
+</style>
+<g clip-path="url(#frame)">
+  <rect width="1000" height="520" fill="#060b0e"/>
+  <rect width="1000" height="520" fill="url(#grid)"/>
+  <path d="M0 0H1000" stroke="url(#edge)" stroke-width="3"/>
+  <path d="M0 101h568l22 22h70M0 218h1000M0 481h1000" fill="none" stroke="#25483a"/>
+  <path class="packet" d="M0 101h568l22 22h70" fill="none" stroke="#62ffb0"/>
+
+  <g font-family="'SFMono-Regular',Consolas,'Liberation Mono',monospace">
+    <path d="M22 20h9v9h-9Z" fill="#64ffae"/><text x="44" y="31" font-size="13" fill="#749a87">masterora@void / tty-01</text>
+    <text x="963" y="31" text-anchor="end" font-size="11" fill="#567465">0x4D · 0110 · ∅</text>
+    <text x="35" y="78" font-size="18" fill="#63ffae">orange:~ $</text>
+    <g clip-path="url(#typed)"><text x="188" y="80" font-size="25" fill="#e8fff2">whoami</text></g>
+    <g class="type-cursor"><path class="blink" d="M191 57v27" stroke="#66ffb1" stroke-width="8"/></g>
+    <g class="name">
+      <text x="34" y="176" font-size="70" font-weight="700" letter-spacing="-5" fill="url(#name)">Der_Orange</text>
+      <g clip-path="url(#name-slice)"><text class="glitch-a" x="34" y="176" font-size="70" font-weight="700" letter-spacing="-5" fill="#ff4a9e">Der_Orange</text></g>
+      <text class="glitch-b" x="40" y="179" font-size="70" font-weight="700" letter-spacing="-5" fill="none" stroke="#2ddde9">Der_Orange</text>
+    </g>
+  </g>
+
+  <g fill="none" transform="rotate(-11 824 119)">
+    <ellipse class="ring-a" cx="824" cy="119" rx="128" ry="45" stroke="#62ffb0" stroke-width="2" stroke-dasharray="72 18 3 26"/>
+    <ellipse class="ring-b" cx="824" cy="119" rx="91" ry="92" stroke="#2ddde9" stroke-opacity=".75" stroke-dasharray="39 11 2 18"/>
+    <ellipse class="ring-c" cx="824" cy="119" rx="58" ry="111" stroke="#ff4a9e" stroke-opacity=".42" stroke-dasharray="8 19"/>
+  </g>
+  <circle cx="824" cy="119" r="73" fill="url(#core)"/>
+  <path d="m824 91 28 16v32l-28 16-28-16v-32Z" fill="#08110d" stroke="#63ffb0" stroke-width="2" filter="url(#glow)"/>
+  <path d="m824 103 15 9v16l-15 9-15-9v-16Z" fill="#2ddde9" opacity=".75"/>
+  <g fill="#63ffb0" filter="url(#glow)"><circle class="spark" cx="690" cy="72" r="3"/><circle class="spark spark-b" cx="938" cy="155" r="4"/><circle class="spark" cx="731" cy="190" r="2"/><circle class="spark spark-b" cx="908" cy="56" r="2"/></g>
+
+  <g font-family="'SFMono-Regular',Consolas,'Liberation Mono',monospace" font-size="12" text-anchor="middle">
+    <g class="row-a">
+      <g transform="translate(50 243)"><g class="chip"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#63ffb0"/><path d="M8 6h20" stroke="#63ffb0"/><text x="70" y="30" fill="#dffff0">GO</text></g></g>
+      <g transform="translate(200 243)"><g class="chip chip-2"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#2ddde9"/><circle cx="20" cy="24" r="5" fill="#2ddde9"/><text x="76" y="30" fill="#dffff0">PYTHON</text></g></g>
+      <g transform="translate(350 243)"><g class="chip chip-3"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#63ffb0"/><rect x="14" y="18" width="12" height="12" fill="#2ddde9"/><text x="80" y="30" fill="#dffff0">TYPESCRIPT</text></g></g>
+      <g transform="translate(500 243)"><g class="chip chip-4"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#2ddde9"/><circle cx="20" cy="24" r="4" fill="#63ffb0"/><text x="79" y="30" fill="#dffff0">REACT</text></g></g>
+      <g transform="translate(650 243)"><g class="chip chip-5"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#63ffb0"/><path d="m14 31 7-15 7 15Z" fill="#63ffb0"/><text x="80" y="30" fill="#dffff0">FASTAPI</text></g></g>
+      <g transform="translate(800 243)"><g class="chip chip-6"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#ff4a9e"/><path d="M13 24h18" stroke="#ff4a9e" stroke-width="3"/><text x="79" y="30" fill="#dffff0">gRPC</text></g></g>
+    </g>
+    <g class="row-b">
+      <g transform="translate(50 315)"><g class="chip chip-3"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#2ddde9"/><text x="70" y="30" fill="#dffff0">POSTGRESQL</text></g></g>
+      <g transform="translate(200 315)"><g class="chip chip-4"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#ff4a9e"/><path d="M14 17h14v14H14z" fill="#ff4a9e"/><text x="79" y="30" fill="#dffff0">REDIS</text></g></g>
+      <g transform="translate(350 315)"><g class="chip chip-5"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#63ffb0"/><text x="70" y="30" fill="#dffff0">NATS</text></g></g>
+      <g transform="translate(500 315)"><g class="chip chip-6"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#2ddde9"/><path d="m14 31 7-14 7 14Z" fill="none" stroke="#2ddde9"/><text x="80" y="30" fill="#dffff0">MILVUS</text></g></g>
+      <g transform="translate(650 315)"><g class="chip"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#ff9a4f"/><path d="M14 17h14v14H14z" fill="none" stroke="#ff9a4f"/><text x="80" y="30" fill="#dffff0">MINIO</text></g></g>
+      <g transform="translate(800 315)"><g class="chip chip-2"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#63ffb0"/><text x="70" y="30" fill="#dffff0">JETSTREAM</text></g></g>
+    </g>
+    <g class="row-c">
+      <g transform="translate(50 387)"><g class="chip chip-5"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#2ddde9"/><text x="70" y="30" fill="#dffff0">DOCKER</text></g></g>
+      <g transform="translate(200 387)"><g class="chip chip-6"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#63ffb0"/><text x="70" y="30" fill="#dffff0">KUBERNETES</text></g></g>
+      <g transform="translate(350 387)"><g class="chip"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#ff4a9e"/><text x="70" y="30" fill="#dffff0">LANGGRAPH</text></g></g>
+      <g transform="translate(500 387)"><g class="chip chip-2"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#2ddde9"/><text x="70" y="30" fill="#dffff0">OTEL</text></g></g>
+      <g transform="translate(650 387)"><g class="chip chip-3"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#ff9a4f"/><text x="70" y="30" fill="#dffff0">PROMETHEUS</text></g></g>
+      <g transform="translate(800 387)"><g class="chip chip-4"><path d="M8 0h120l12 12v24l-12 12H8L0 40V8Z" fill="#09130f" stroke="#63ffb0"/><text x="70" y="30" fill="#dffff0">GRAFANA</text></g></g>
+    </g>
+  </g>
+
+  <rect class="laser" x="0" y="225" width="92" height="245" fill="url(#laser)" opacity=".3"/>
+  <rect class="sweep" width="1000" height="62" fill="url(#laser)" opacity=".16"/>
+  <g fill="#63ffb0" opacity=".55"><path d="M18 468h80v3H18zM110 468h14v3h-14zM876 468h44v3h-44zM931 468h18v3h-18z"/></g>
+  <rect width="1000" height="520" fill="url(#scanlines)"/>
+</g>
+<path d="M18 1H970L999 30V488L967 519H1V18Z" fill="none" stroke="#2a5040"/>
+<path d="M1 91V18L18 1h158M852 519h115l32-31v-83" fill="none" stroke="#63ffb0" stroke-width="2"/>
+</svg>
