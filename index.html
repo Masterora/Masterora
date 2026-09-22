@@ -1,50 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#000000">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#060806">
 <title>Der_Orange / Pinball</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#000;color:#ccc;font-family:monospace}
-main{min-height:100svh;display:grid;place-items:center;padding:24px}
-#field{position:relative;width:min(1500px,100%);aspect-ratio:1983/793;outline:none;touch-action:pan-y}
-#field:focus-visible{outline:1px solid #8aff00;outline-offset:12px}
-img,svg{display:block;width:100%;height:100%;object-fit:contain}
-nav{position:fixed;bottom:24px;left:28px;right:28px;display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.08em}
-a,button{color:#999;background:none;border:0;font:inherit;text-decoration:none;padding:12px;cursor:pointer}
-a:hover,button:hover{color:#8aff00}a:focus-visible,button:focus-visible{outline:1px solid #8aff00}
-@media(max-width:600px){main{padding:12px}nav{left:8px;right:8px;bottom:12px}}
+*{box-sizing:border-box}body{margin:0;background:#060806;color:#d9dfd4;font:12px ui-monospace,SFMono-Regular,monospace;min-height:100svh}main{min-height:100svh;display:flex;flex-direction:column;justify-content:center;width:min(1560px,100%);padding:32px;margin:auto;gap:20px}header,footer,.controls{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{letter-spacing:.2em;color:#a9bc9d}.brand b{color:#b3ff5a;font-weight:400}.telemetry{font-variant-numeric:tabular-nums;color:#84947b}.telemetry output{color:#d6efc0;font-size:18px;margin-left:12px}#field{position:relative;aspect-ratio:1983/793;width:100%;border:1px solid #2b3526;border-radius:16px;background:#030503;box-shadow:0 30px 100px #0009;overflow:hidden;touch-action:none}#field:focus-visible{outline:2px solid #b3ff5a;outline-offset:5px}img,svg{display:block;width:100%;height:100%}.live .moving-ball{display:none}.live .bumper,.live .impact,.live .flipper-left,.live .flipper-right,.live .kicker{animation:none!important}.live .impact{opacity:0}.live .flipper-left,.live .flipper-right{visibility:hidden}.paused *{animation-play-state:paused!important}button,a{font:inherit;letter-spacing:.04em;color:#abb7a3;text-decoration:none;background:#0c100b;border:1px solid #2a3525;border-radius:7px;min-height:44px;padding:12px 16px;cursor:pointer}button:hover,a:hover{border-color:#718e52;color:#cfff91}button:focus-visible,a:focus-visible{outline:2px solid #b3ff5a;outline-offset:3px}button[aria-pressed=true]{color:#b3ff5a;border-color:#658840}button:disabled{opacity:.4;cursor:default}.hint{color:#8b9982}.paddles{display:flex;gap:8px}.paddles button{min-width:86px;touch-action:none;user-select:none}.paddles button:active{background:#9fe83e;color:#142008}footer{flex-wrap:wrap}.error{color:#f0be8b}@media(max-width:650px){main{padding:12px;gap:14px}.brand{font-size:10px}.hint{width:100%;order:3;text-align:center;font-size:11px}.controls{gap:6px}button,a{padding:10px}.telemetry output{font-size:15px}.paddles button{min-width:68px}#field{border-radius:9px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
 </style>
 </head>
-<body>
-<main><div id="field" tabindex="0" role="button" aria-label="Activate the pinball flippers. Click, tap, or press Enter.">
-<img src="./assets/tech-pinball-v1.svg" alt="Technology pinball with green balls, bumpers and pixel sparks">
-</div></main>
-<nav><a href="https://github.com/Masterora" aria-label="Back to GitHub">↖ GITHUB</a><button id="motion" type="button" aria-pressed="false">PAUSE</button></nav>
-<script>
-const field=document.querySelector('#field'),motion=document.querySelector('#motion');
-const preference=matchMedia('(prefers-reduced-motion: reduce)');
-let paused=preference.matches,resetTimer;
-function sync(){
-  field.classList.toggle('paused',paused);
-  if(paused){clearTimeout(resetTimer);field.classList.remove('launch')}
-  motion.textContent=paused?'PLAY':'PAUSE';
-  motion.setAttribute('aria-pressed',String(paused));
-}
-fetch('./assets/tech-pinball-v1.svg').then(r=>{if(!r.ok)throw Error('Artwork unavailable');return r.text()}).then(markup=>{
-  field.innerHTML=markup;sync();
-}).catch(()=>{motion.hidden=true});
-function flip(){
-  if(paused||preference.matches)return;
-  field.classList.add('launch');
-  clearTimeout(resetTimer);resetTimer=setTimeout(()=>field.classList.remove('launch'),220);
-}
-field.addEventListener('pointerdown',flip);
-field.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.repeat){e.preventDefault();flip()}});
-motion.addEventListener('click',()=>{paused=!paused;sync()});
-preference.addEventListener('change',e=>{paused=e.matches;sync()});
-sync();
-</script>
-</body>
-</html>
+<body><main>
+<header><span class="brand"><b>●</b> TECH / PINBALL</span><span class="telemetry">HITS <output id="hits">00000</output></span></header>
+<div id="field" tabindex="0" role="group" aria-label="弹珠台。左右方向键控制挡板，空格发球。"><img src="./assets/tech-pinball-v2.svg" alt="技术图标弹珠台"></div>
+<footer><div class="controls"><a href="https://github.com/Masterora" aria-label="返回 GitHub">↖ GITHUB</a><button id="motion" aria-pressed="false" disabled>暂停</button><button id="launch" disabled>发球</button></div><span class="hint" id="status">自动演示 · ← → 挡板 / 空格发球</span><div class="paddles"><button id="left" aria-label="左挡板" disabled>←</button><button id="right" aria-label="右挡板" disabled>→</button></div></footer>
+</main><script type="module" src="./pinball.mjs"></script></body></html>
