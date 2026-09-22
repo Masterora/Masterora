@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#060606" />
+<title>Der_Orange / anomaly</title>
+<style>
+  *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#060606}
+  body{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;cursor:none;touch-action:none;user-select:none}
+  #field{position:fixed;inset:0;width:100%;height:100%;opacity:.78}
+  #stage{position:fixed;inset:0;display:grid;place-items:center;transform-style:preserve-3d;will-change:transform}
+  #art{width:min(1220px,112vw);filter:drop-shadow(0 36px 80px #000);will-change:transform}
+  #art svg{display:block;width:100%;height:auto;overflow:visible}
+  #art .iris,#art .shard,#art .glyph use{animation:none!important;will-change:transform}
+  #art .wire{stroke-opacity:.13}
+  #art .pulse{stroke-width:1.15}
+  #cursor{position:fixed;left:0;top:0;width:34px;height:34px;border:1px solid rgba(242,106,33,.72);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:screen;transition:width .16s,height .16s,border-color .16s;z-index:4}
+  #cursor::before,#cursor::after{content:"";position:absolute;left:50%;top:50%;background:#fff7e6;opacity:.62;transform:translate(-50%,-50%)}
+  #cursor::before{width:4px;height:1px}#cursor::after{width:1px;height:4px}
+  body.overload #cursor{width:88px;height:88px;border-color:#fff7e6}
+  .shock{position:fixed;width:20px;height:20px;border:1px solid #f26a21;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);animation:shock .72s cubic-bezier(.16,.8,.32,1) forwards;z-index:3}
+  @keyframes shock{to{width:min(130vmax,1400px);height:min(130vmax,1400px);opacity:0;border-width:9px}}
+  .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media(max-aspect-ratio:4/5){#art{width:178vw;transform:rotate(90deg)}#cursor{display:none}}
+  @media(prefers-reduced-motion:reduce){#field{display:none}#cursor{transition:none}.shock{display:none}}
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+<main id="stage" aria-label="Interactive technology anomaly"><div id="art"></div></main>
+<div id="cursor" aria-hidden="true"></div>
+<p class="sr">Move the pointer to bend the data field. Click or tap to overload the anomaly.</p>
+<script>
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canvas=document.querySelector('#field'),ctx=canvas.getContext('2d'),stage=document.querySelector('#stage'),art=document.querySelector('#art'),cursor=document.querySelector('#cursor');
+let w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),target={x:.5,y:.5},pointer={x:.5,y:.5},energy=0,last=performance.now(),glyphs=[],iris=[];
+const resize=()=>{w=innerWidth;h=innerHeight;dpr=Math.min(devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0)};
+addEventListener('resize',resize);resize();
+
+fetch('./assets/tech-singularity.svg').then(r=>r.text()).then(markup=>{
+  art.innerHTML=markup;
+  const svg=art.querySelector('svg');svg.removeAttribute('width');svg.removeAttribute('height');
+  glyphs=[...svg.querySelectorAll('.glyph use')];iris=[...svg.querySelectorAll('.iris,.shard')];
+  glyphs.forEach((el,i)=>{el.dataset.depth=String(.25+(i%5)*.17)});
+});
+
+const particles=Array.from({length:reduce?0:96},(_,i)=>({x:Math.random()*w,y:Math.random()*h,vx:0,vy:0,r:i%13===0?1.8:.65,a:.15+Math.random()*.48}));
+function move(e){target.x=e.clientX/w;target.y=e.clientY/h;cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px'}
+addEventListener('pointermove',move,{passive:true});
+addEventListener('pointerdown',e=>{
+  move(e);energy=1;document.body.classList.add('overload');
+  const ring=document.createElement('i');ring.className='shock';ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';document.body.append(ring);ring.addEventListener('animationend',()=>ring.remove());
+  particles.forEach(p=>{const dx=p.x-e.clientX,dy=p.y-e.clientY,d=Math.hypot(dx,dy)||1,force=18+Math.random()*18;p.vx+=dx/d*force;p.vy+=dy/d*force});
+  setTimeout(()=>document.body.classList.remove('overload'),420);
+},{passive:true});
+
+function draw(dt){
+  ctx.clearRect(0,0,w,h);ctx.globalCompositeOperation='lighter';
+  const cx=w*.5+(pointer.x-.5)*54,cy=h*.5+(pointer.y-.5)*34;
+  for(const p of particles){
+    const dx=cx-p.x,dy=cy-p.y,dist=Math.hypot(dx,dy)||1;
+    p.vx+=dx/dist*.016*dt;p.vy+=dy/dist*.016*dt;
+    const mx=pointer.x*w-p.x,my=pointer.y*h-p.y,md=Math.hypot(mx,my)||1;
+    if(md<150){const repel=(150-md)/150*.05*dt;p.vx-=mx/md*repel;p.vy-=my/md*repel}
+    p.vx*=Math.pow(.985,dt);p.vy*=Math.pow(.985,dt);p.x+=p.vx*dt;p.y+=p.vy*dt;
+    if(dist<44){p.x=Math.random()<.5?-12:w+12;p.y=Math.random()*h;p.vx=p.vy=0}
+    ctx.fillStyle=`rgba(242,106,33,${p.a})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+    if(dist<260){ctx.strokeStyle=`rgba(241,238,231,${(1-dist/260)*.055})`;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(cx,cy);ctx.stroke()}
+  }
+  ctx.globalCompositeOperation='source-over';
+}
+
+function frame(now){
+  const dt=Math.min((now-last)/16.67,2);last=now;pointer.x+=(target.x-pointer.x)*.065;pointer.y+=(target.y-pointer.y)*.065;energy*=.92;
+  const nx=pointer.x-.5,ny=pointer.y-.5,breath=1+Math.sin(now/720)*.025+energy*.2;
+  stage.style.transform=`perspective(900px) rotateY(${nx*5}deg) rotateX(${-ny*4}deg) scale(${1+energy*.025})`;
+  iris.forEach((el,i)=>el.style.transform=`translate(${nx*(10+i*2)}px,${ny*(7+i)}px) scale(${breath})`);
+  glyphs.forEach((el,i)=>{const depth=+el.dataset.depth||.5,scatter=energy*(18+i%4*5),sx=((i%2)*2-1)*scatter;el.style.transform=`translate(${nx*depth*26+sx}px,${ny*depth*18+(i%3-1)*energy*12}px) rotate(${nx*depth*5}deg)`});
+  if(!reduce)draw(dt);requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
