@@ -27,8 +27,8 @@
   <symbol id="git" viewBox="-14 -14 28 28"><path d="M-8-11v16c0 5 4 8 8 8s8-3 8-8V-1"/><circle cx="-8" cy="-10" r="3"/><circle cx="-8" cy="1" r="3"/><circle cx="8" cy="-3" r="3"/></symbol>
 </defs>
 <style>
-  .wire{fill:none;stroke:#b9b5ad;stroke-width:1;stroke-opacity:.2}.pulse{fill:none;stroke:url(#fade);stroke-width:1.6;stroke-dasharray:2 18 34 21;animation:flow 7s linear infinite}.p2{animation-duration:11s;animation-direction:reverse}.glyph{color:#d8d4cc;fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round;opacity:.62}.glyph use{transform-box:fill-box;transform-origin:center;animation:wake 8s steps(1,end) infinite}.g2 use{animation-delay:-2s}.g3 use{animation-delay:-4s}.g4 use{animation-delay:-6s}.iris{transform-origin:500px 170px;animation:breathe 3.8s ease-in-out infinite}.shard{animation:shiver 6s steps(1,end) infinite}.scanbar{animation:scanbar 6s linear infinite}.noise{animation:noise 5s steps(1,end) infinite}
-  @keyframes flow{to{stroke-dashoffset:-150}}@keyframes breathe{50%{transform:scale(1.12);opacity:.74}}@keyframes wake{0%,8%,100%{opacity:.48}4%{opacity:1;filter:url(#glow)}}
+  .grid{fill:none;stroke:#b9b5ad;stroke-width:1;stroke-opacity:.075}.wire{fill:none;stroke:#b9b5ad;stroke-width:1;stroke-opacity:.2}.pulse{fill:none;stroke:url(#fade);stroke-width:1.6;stroke-dasharray:2 18 34 21;animation:flow 7s linear infinite}.p2{animation-duration:11s;animation-direction:reverse}.glyph{color:#d8d4cc;fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round;opacity:.62}.glyph use{transform-box:fill-box;transform-origin:center;animation:wake 8s steps(1,end) infinite}.g2 use{animation-delay:-2s}.g3 use{animation-delay:-4s}.g4 use{animation-delay:-6s}.core,.shard{transform-box:view-box;transform-origin:500px 170px}.core{animation:turn 18s linear infinite}.core-b{animation-direction:reverse;animation-duration:11s}.shard{animation:shiver 6s steps(1,end) infinite}.scanbar{animation:scanbar 6s linear infinite}.noise{animation:noise 5s steps(1,end) infinite}
+  @keyframes flow{to{stroke-dashoffset:-150}}@keyframes turn{to{transform:rotate(360deg)}}@keyframes wake{0%,8%,100%{opacity:.48}4%{opacity:1;filter:url(#glow)}}
   @keyframes shiver{0%,91%,100%{transform:translate(0)}92%{transform:translate(11px,-2px)}94%{transform:translate(-7px,3px)}96%{transform:translate(3px,-1px)}}
   @keyframes scanbar{from{transform:translateX(-220px)}to{transform:translateX(1220px)}}@keyframes noise{0%,88%,100%{opacity:0}89%,92%{opacity:.65}90%{opacity:.12}}
   @media(prefers-reduced-motion:reduce){*{animation:none!important}.scanbar,.noise{display:none}}
@@ -36,42 +36,45 @@
 <path d="M18 0H982L1000 18v304l-18 18H18L0 322V18Z" fill="#060606"/>
 <path d="M18 .5H982L999.5 18v304L982 339.5H18L.5 322V18Z" fill="none" stroke="#34312d"/>
 <path d="M0 0h1000v340H0z" fill="url(#scan)"/>
+<g class="grid">
+  <path d="M100 0 500 170 900 0M0 45 500 170 1000 45M0 295 500 170 1000 295M100 340 500 170 900 340"/>
+  <path d="M250 0 500 170 750 0M250 340 500 170 750 340"/>
+  <path d="M0 34h1000M0 306h1000M0 74h1000M0 266h1000"/>
+</g>
 <g class="wire">
-  <path d="M22 58C157 20 302 35 414 116S462 170 500 170 476 170 586 116 843 20 978 58"/>
-  <path d="M22 103C151 73 292 79 405 135S467 170 500 170 471 170 595 135 849 73 978 103"/>
-  <path d="M22 151C166 136 300 137 414 153S472 170 500 170 466 170 586 153 834 136 978 151"/>
-  <path d="M22 189C166 204 300 203 414 187S472 170 500 170 466 170 586 187 834 204 978 189"/>
-  <path d="M22 237C151 267 292 261 405 205S467 170 500 170 471 170 595 205 849 267 978 237"/>
-  <path d="M22 282C157 320 302 305 414 224S462 170 500 170 476 170 586 224 843 320 978 282"/>
+  <path d="M22 54C167 88 300 18 455 70S760 27 978 62"/>
+  <path d="M22 106C174 67 318 151 456 116S780 96 978 126"/>
+  <path d="M22 157C197 186 309 104 444 151L500 121l56 58c147-47 281 16 422-18"/>
+  <path d="M22 207C185 171 315 249 450 206l50 28 48-43c148 48 290-15 430 28"/>
+  <path d="M22 252C162 289 315 216 458 252S782 217 978 263"/>
+  <path d="M22 297C176 263 334 327 468 278S790 319 978 289"/>
 </g>
 <g>
-  <path class="pulse" d="M22 58C157 20 302 35 414 116S462 170 500 170 476 170 586 116 843 20 978 58"/>
-  <path class="pulse p2" d="M22 103C151 73 292 79 405 135S467 170 500 170 471 170 595 135 849 73 978 103"/>
-  <path class="pulse" d="M22 151C166 136 300 137 414 153S472 170 500 170 466 170 586 153 834 136 978 151"/>
-  <path class="pulse p2" d="M22 189C166 204 300 203 414 187S472 170 500 170 466 170 586 187 834 204 978 189"/>
-  <path class="pulse" d="M22 237C151 267 292 261 405 205S467 170 500 170 471 170 595 205 849 267 978 237"/>
-  <path class="pulse p2" d="M22 282C157 320 302 305 414 224S462 170 500 170 476 170 586 224 843 320 978 282"/>
+  <path class="pulse" d="M22 54C167 88 300 18 455 70S760 27 978 62"/>
+  <path class="pulse p2" d="M22 106C174 67 318 151 456 116S780 96 978 126"/>
+  <path class="pulse" d="M22 157C197 186 309 104 444 151L500 121l56 58c147-47 281 16 422-18"/>
+  <path class="pulse p2" d="M22 207C185 171 315 249 450 206l50 28 48-43c148 48 290-15 430 28"/>
+  <path class="pulse" d="M22 252C162 289 315 216 458 252S782 217 978 263"/>
+  <path class="pulse p2" d="M22 297C176 263 334 327 468 278S790 319 978 289"/>
 </g>
 <g class="glyph">
-  <g class="g1"><use href="#go" x="63" y="43" width="28" height="28"/><use href="#py" x="201" y="29" width="28" height="28"/><use href="#ts" x="338" y="67" width="26" height="26"/></g>
-  <g class="g2"><use href="#react" x="87" y="91" width="28" height="28"/><use href="#bolt" x="233" y="94" width="28" height="28"/><use href="#graph" x="365" y="119" width="28" height="28"/></g>
-  <g class="g3"><use href="#db" x="50" y="143" width="28" height="28"/><use href="#redis" x="190" y="144" width="28" height="28"/><use href="#vector" x="323" y="148" width="28" height="28"/></g>
-  <g class="g2"><use href="#docker" x="910" y="43" width="28" height="28"/><use href="#kube" x="771" y="29" width="28" height="28"/><use href="#prom" x="636" y="67" width="28" height="28"/></g>
-  <g class="g3"><use href="#graf" x="884" y="91" width="28" height="28"/><use href="#cube" x="739" y="94" width="28" height="28"/><use href="#otel" x="607" y="119" width="28" height="28"/></g>
-  <g class="g4"><use href="#queue" x="910" y="222" width="28" height="28"/><use href="#rpc" x="771" y="253" width="28" height="28"/><use href="#git" x="636" y="224" width="28" height="28"/></g>
+  <g class="g1"><use href="#go" x="66" y="54" width="28" height="28"/><use href="#py" x="210" y="27" width="28" height="28"/><use href="#ts" x="350" y="49" width="26" height="26"/></g>
+  <g class="g2"><use href="#react" x="102" y="103" width="28" height="28"/><use href="#bolt" x="245" y="112" width="28" height="28"/><use href="#graph" x="365" y="125" width="28" height="28"/></g>
+  <g class="g3"><use href="#db" x="57" y="190" width="28" height="28"/><use href="#redis" x="210" y="224" width="28" height="28"/><use href="#vector" x="342" y="205" width="28" height="28"/></g>
+  <g class="g2"><use href="#docker" x="900" y="65" width="28" height="28"/><use href="#kube" x="768" y="35" width="28" height="28"/><use href="#prom" x="635" y="73" width="28" height="28"/></g>
+  <g class="g3"><use href="#graf" x="864" y="119" width="28" height="28"/><use href="#cube" x="742" y="106" width="28" height="28"/><use href="#otel" x="617" y="142" width="28" height="28"/></g>
+  <g class="g4"><use href="#queue" x="912" y="251" width="28" height="28"/><use href="#rpc" x="770" y="244" width="28" height="28"/><use href="#git" x="638" y="217" width="28" height="28"/></g>
 </g>
-<g opacity=".5" fill="none" stroke="#f1eee7">
-  <path d="M448 106 500 70l52 36 30 64-30 64-52 36-52-36-30-64Z" stroke-opacity=".18"/>
-  <path class="shard" d="M466 94 500 45l34 49-9 50 31 26-31 26 9 50-34 49-34-49 9-50-31-26 31-26Z" stroke-opacity=".3"/>
-  <path d="M500 51v238M416 170h168" stroke-opacity=".09"/>
+<g fill="none" stroke="#f1eee7">
+  <rect class="core" x="439" y="109" width="122" height="122" transform="rotate(45 500 170)" stroke-opacity=".18"/>
+  <rect class="core core-b" x="456" y="126" width="88" height="88" transform="rotate(45 500 170)" stroke="#f26a21" stroke-opacity=".78"/>
+  <rect class="core" x="472" y="142" width="56" height="56" stroke-opacity=".38"/>
+  <path class="shard" d="M500 89 521 130 500 151 479 130ZM581 170 540 191 519 170 540 149ZM500 251 479 210 500 189 521 210ZM419 170 460 149 481 170 460 191Z" stroke="#f26a21" stroke-opacity=".65"/>
+  <path d="M500 75v190M405 170h190" stroke-opacity=".08"/>
 </g>
-<ellipse cx="500" cy="170" rx="92" ry="35" fill="#f26a21" opacity=".12" filter="url(#soft)"/>
-<path class="iris" d="M404 170c25-42 58-61 96-61s71 19 96 61c-25 42-58 61-96 61s-71-19-96-61Z" fill="#080705" stroke="#f26a21" stroke-opacity=".72"/>
-<path class="iris" d="M427 170c20-23 44-35 73-35s53 12 73 35c-20 23-44 35-73 35s-53-12-73-35Z" fill="none" stroke="#efeae1" stroke-opacity=".45"/>
-<ellipse class="iris" cx="500" cy="170" rx="17" ry="49" fill="url(#heat)" filter="url(#glow)"/>
-<path d="M500 129c-8 17-8 65 0 82 8-17 8-65 0-82Z" fill="#050505"/>
-<circle cx="500" cy="170" r="4" fill="#fff7e6" filter="url(#glow)"/>
-<g class="noise" fill="#f26a21"><path d="M384 126h91v3h-91zM536 203h118v4H536zM445 242h71v2h-71z"/></g>
+<rect x="480" y="150" width="40" height="40" fill="#060606" stroke="#f1eee7" stroke-opacity=".42"/>
+<rect class="core" x="489" y="159" width="22" height="22" fill="url(#heat)" filter="url(#glow)" stroke="none"/>
+<g class="noise" fill="#f26a21"><path d="M390 116h83v3h-83zM532 211h126v4H532zM446 259h54v2h-54zM508 83h71v2h-71z"/></g>
 <path class="scanbar" d="M0 0h34l112 170L34 340H0l112-170Z" fill="#f1eee7" opacity=".025"/>
 <g fill="#f26a21" filter="url(#glow)"><circle cx="302" cy="83" r="2"><animate attributeName="opacity" values=".2;1;.2" dur="3s" repeatCount="indefinite"/></circle><circle cx="718" cy="257" r="2"><animate attributeName="opacity" values="1;.2;1" dur="4s" repeatCount="indefinite"/></circle><circle cx="837" cy="129" r="1.5"><animate attributeName="opacity" values=".1;1;.1" dur="2.4s" repeatCount="indefinite"/></circle></g>
 </svg>

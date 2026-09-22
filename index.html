@@ -11,8 +11,8 @@
   #field{position:fixed;inset:0;width:100%;height:100%;opacity:.78}
   #stage{position:fixed;inset:0;display:grid;place-items:center;transform-style:preserve-3d;will-change:transform}
   #art{width:min(1220px,112vw);filter:drop-shadow(0 36px 80px #000);will-change:transform}
-  #art svg{display:block;width:100%;height:auto;overflow:visible}
-  #art .iris,#art .shard,#art .glyph use{animation:none!important;will-change:transform}
+  #art svg{display:block;width:100%;height:auto;overflow:hidden}
+  #art .core,#art .shard,#art .glyph use{animation:none!important;will-change:transform}
   #art .wire{stroke-opacity:.13}
   #art .pulse{stroke-width:1.15}
   #cursor{position:fixed;left:0;top:0;width:34px;height:34px;border:1px solid rgba(242,106,33,.72);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:screen;transition:width .16s,height .16s,border-color .16s;z-index:4}
@@ -34,14 +34,14 @@
 <script>
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const canvas=document.querySelector('#field'),ctx=canvas.getContext('2d'),stage=document.querySelector('#stage'),art=document.querySelector('#art'),cursor=document.querySelector('#cursor');
-let w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),target={x:.5,y:.5},pointer={x:.5,y:.5},energy=0,last=performance.now(),glyphs=[],iris=[];
+let w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),target={x:.5,y:.5},pointer={x:.5,y:.5},energy=0,last=performance.now(),glyphs=[],shards=[];
 const resize=()=>{w=innerWidth;h=innerHeight;dpr=Math.min(devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0)};
 addEventListener('resize',resize);resize();
 
 fetch('./assets/tech-singularity.svg').then(r=>r.text()).then(markup=>{
   art.innerHTML=markup;
   const svg=art.querySelector('svg');svg.removeAttribute('width');svg.removeAttribute('height');
-  glyphs=[...svg.querySelectorAll('.glyph use')];iris=[...svg.querySelectorAll('.iris,.shard')];
+  glyphs=[...svg.querySelectorAll('.glyph use')];shards=[...svg.querySelectorAll('.shard')];
   glyphs.forEach((el,i)=>{el.dataset.depth=String(.25+(i%5)*.17)});
 });
 
@@ -73,9 +73,9 @@ function draw(dt){
 
 function frame(now){
   const dt=Math.min((now-last)/16.67,2);last=now;pointer.x+=(target.x-pointer.x)*.065;pointer.y+=(target.y-pointer.y)*.065;energy*=.92;
-  const nx=pointer.x-.5,ny=pointer.y-.5,breath=1+Math.sin(now/720)*.025+energy*.2;
+  const nx=pointer.x-.5,ny=pointer.y-.5,burst=1+energy*.2;
   stage.style.transform=`perspective(900px) rotateY(${nx*5}deg) rotateX(${-ny*4}deg) scale(${1+energy*.025})`;
-  iris.forEach((el,i)=>el.style.transform=`translate(${nx*(10+i*2)}px,${ny*(7+i)}px) scale(${breath})`);
+  shards.forEach((el,i)=>el.style.transform=`translate(${nx*(10+i*2)}px,${ny*(7+i)}px) scale(${burst})`);
   glyphs.forEach((el,i)=>{const depth=+el.dataset.depth||.5,scatter=energy*(18+i%4*5),sx=((i%2)*2-1)*scatter;el.style.transform=`translate(${nx*depth*26+sx}px,${ny*depth*18+(i%3-1)*energy*12}px) rotate(${nx*depth*5}deg)`});
   if(!reduce)draw(dt);requestAnimationFrame(frame);
 }
