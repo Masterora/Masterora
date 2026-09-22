@@ -10,7 +10,7 @@
 main{min-height:100svh;display:grid;place-items:center;padding:24px}
 #field{position:relative;width:min(1500px,100%);aspect-ratio:1983/793;outline:none;touch-action:pan-y}
 #field:focus-visible{outline:1px solid #8aff00;outline-offset:12px}
-img,canvas{display:block;width:100%;height:100%;object-fit:contain}
+img,svg{display:block;width:100%;height:100%;object-fit:contain}
 canvas{position:absolute;inset:0;pointer-events:none}
 nav{position:fixed;bottom:24px;left:28px;right:28px;display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.08em}
 a,button{color:#999;background:none;border:0;font:inherit;text-decoration:none;padding:12px;cursor:pointer}
@@ -20,62 +20,42 @@ a:hover,button:hover{color:#8aff00}a:focus-visible,button:focus-visible{outline:
 </head>
 <body>
 <main><div id="field" tabindex="0" role="button" aria-label="Disrupt the pixel field. Move your pointer, click, tap, or press Enter.">
-<img src="./assets/tech-field.png" alt="Monochrome technology symbols, staggered rails and green pixel fragments">
-<canvas aria-hidden="true"></canvas></div></main>
+<img src="./assets/tech-motion-v3.svg" alt="Monochrome technology symbols, staggered rails and green pixel fragments">
+</div></main>
 <nav><a href="https://github.com/Masterora" aria-label="Back to GitHub">↖ GITHUB</a><button id="motion" type="button" aria-pressed="false">PAUSE</button></nav>
 <script>
-const field=document.querySelector('#field'),canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),source=document.querySelector('img'),motion=document.querySelector('#motion');
+const field=document.querySelector('#field'),motion=document.querySelector('#motion');
 const preference=matchMedia('(prefers-reduced-motion: reduce)');
-let paused=preference.matches,frameId=0,width=1,height=1,last=0,active=false,pointer={x:0,y:0},fragments=[];
-function bounds(){
-  const box=field.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2);
-  width=box.width;height=box.height;canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);
-}
-new ResizeObserver(bounds).observe(field);
-function imageBox(){
-  const iw=width,ih=iw*source.naturalHeight/source.naturalWidth;
-  return {x:(width-iw)/2,y:(height-ih)/2,w:iw,h:ih};
-}
-function updatePointer(e){const r=field.getBoundingClientRect();pointer={x:e.clientX-r.left,y:e.clientY-r.top};active=true}
-field.addEventListener('pointermove',updatePointer);
-field.addEventListener('pointerleave',()=>active=false);
-function burst(){
-  if(paused)return;
-  for(let i=0;i<55;i++){const angle=Math.random()*Math.PI*2,speed=30+Math.random()*140;
-    fragments.push({x:pointer.x,y:pointer.y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:.5+Math.random()*.7,size:1+Math.random()*5,green:i%3===0});
-  }
-  fragments=fragments.slice(-220);
-}
-field.addEventListener('pointerdown',e=>{updatePointer(e);burst()});
-field.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pointer={x:width/2,y:height/2};burst()}});
-function render(time){
-  const dt=Math.min((time-last)/1000,.04);last=time;ctx.clearRect(0,0,width,height);
-  if(source.complete&&source.naturalWidth&&active){
-    const box=imageBox(),radius=Math.min(130,width*.2);
-    ctx.save();ctx.beginPath();ctx.rect(pointer.x-radius,pointer.y-radius,radius*2,radius*2);ctx.clip();
-    for(let y=Math.max(box.y,pointer.y-radius);y<Math.min(box.y+box.h,pointer.y+radius);y+=6){
-      const distance=Math.abs(y-pointer.y)/radius,strength=Math.pow(1-distance,2);
-      const dx=Math.sin(y*.13+time*.007)*strength*13;
-      ctx.fillStyle='#000';ctx.fillRect(pointer.x-radius,y,radius*2,6);
-      const sy=(y-box.y)/box.h*source.naturalHeight,sh=Math.min(6/box.h*source.naturalHeight,source.naturalHeight-sy);
-      if(sh>0)ctx.drawImage(source,0,sy,source.naturalWidth,sh,box.x+dx,y,box.w,6);
-    }
-    ctx.restore();ctx.fillStyle='#8aff00';ctx.fillRect(pointer.x+13,pointer.y+13,5,5);
-  }
-  fragments=fragments.filter(p=>p.life>0);
-  for(const p of fragments){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.exp(-dt*2);p.vy*=Math.exp(-dt*2);p.life-=dt;
-    ctx.globalAlpha=Math.min(p.life,1);ctx.fillStyle=p.green?'#8aff00':'#bdbdbd';ctx.fillRect(p.x,p.y,p.size,p.size);
-  }
-  ctx.globalAlpha=1;if(!paused&&!document.hidden)frameId=requestAnimationFrame(render);
-}
+let paused=preference.matches, pieces=[],resetTimer;
 function sync(){
-  cancelAnimationFrame(frameId);motion.textContent=paused?'PLAY':'PAUSE';motion.setAttribute('aria-pressed',String(paused));
-  if(paused){ctx.clearRect(0,0,width,height);fragments=[]}else if(!document.hidden){last=performance.now();frameId=requestAnimationFrame(render)}
+  field.classList.toggle('paused',paused);
+  motion.textContent=paused?'PLAY':'PAUSE';
+  motion.setAttribute('aria-pressed',String(paused));
 }
+fetch('./assets/tech-motion-v3.svg').then(r=>{if(!r.ok)throw Error('Artwork unavailable');return r.text()}).then(markup=>{
+  field.innerHTML=markup;pieces=[...field.querySelectorAll('.reactive')];sync();
+}).catch(()=>{motion.hidden=true});
+function scatter(x,y){
+  if(paused||preference.matches)return;
+  const box=field.getBoundingClientRect();
+  pieces.forEach((piece,i)=>{
+    const dx=(i%2?1:-1)*(32+Math.abs(x-box.width/2)*.06);
+    const dy=((i%3)-1)*(24+Math.abs(y-box.height/2)*.05);
+    piece.style.transform='translate('+dx+'px,'+dy+'px)';
+  });
+  clearTimeout(resetTimer);resetTimer=setTimeout(()=>pieces.forEach(p=>p.style.transform=''),650);
+}
+field.addEventListener('pointerdown',e=>{const r=field.getBoundingClientRect();scatter(e.clientX-r.left,e.clientY-r.top)});
+field.addEventListener('pointermove',e=>{
+  if(paused||preference.matches)return;
+  const r=field.getBoundingClientRect(),nx=(e.clientX-r.left)/r.width-.5,ny=(e.clientY-r.top)/r.height-.5;
+  pieces.forEach((p,i)=>p.style.transform='translate('+nx*(12+i%4*5)+'px,'+ny*(12+i%3*7)+'px)');
+});
+field.addEventListener('pointerleave',()=>pieces.forEach(p=>p.style.transform=''));
+field.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();scatter(0,0)}});
 motion.addEventListener('click',()=>{paused=!paused;sync()});
 preference.addEventListener('change',e=>{paused=e.matches;sync()});
-document.addEventListener('visibilitychange',sync);
-bounds();sync();
+sync();
 </script>
 </body>
 </html>
