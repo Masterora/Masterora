@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {Scoreboard} from '../scoring.mjs';
+test('bumper and sling scoring share combo multiplier',()=>{const s=new Scoreboard();assert.equal(s.hit({},0).points,100);assert.equal(s.hit({type:'sling'},.1).points,250);s.hit({},.2);s.hit({},.3);assert.equal(s.hit({},.4).points,200);assert.equal(s.total,750);});
+test('combo expires without losing accumulated score',()=>{const s=new Scoreboard();s.hit({},0);s.expire(2);assert.equal(s.combo,0);assert.equal(s.total,100);assert.equal(s.hit({},2).multiplier,1);});
+test('multiplier is capped and explosions are rate-limited',()=>{const s=new Scoreboard();let bursts=0;for(let i=0;i<100;i++)bursts+=Number(s.hit({},i*.02).burst);assert.equal(s.multiplier,8);assert.ok(bursts>=1&&bursts<=3);});

@@ -1,17 +1,19 @@
+import {Scoreboard} from './scoring.mjs?v=score-1';
 import {World,STEP,bumpers} from './physics.mjs?v=slings-1';
 const field=document.querySelector('#field'),pause=document.querySelector('#motion'),status=document.querySelector('#status'),hits=document.querySelector('#hits');
 const preference=matchMedia('(prefers-reduced-motion: reduce)');
 let paused=preference.matches,world=new World(),accumulator=0,last=0,manualUntil=0;
+const score=new Scoreboard(),scoreNode=document.querySelector('#score'),comboNode=document.querySelector('#combo'),multiplierNode=document.querySelector('#multiplier'),comboLife=document.querySelector('#combo-life');
 const input={left:false,right:false,auto:true},NS='http://www.w3.org/2000/svg';
 function element(tag,attrs,parent){const n=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);parent.append(n);return n;}
 try{
- const response=await fetch('./assets/tech-pinball-v3.svg');if(!response.ok)throw Error('asset');
+ const response=await fetch('./assets/tech-pinball-v4.svg');if(!response.ok)throw Error('asset');
  field.innerHTML=await response.text();field.classList.add('live');
  const svg=field.querySelector('svg');svg.querySelector('desc').textContent='实时重力、弹性碰撞与可控制挡板的技术弹珠台。';
  const layer=element('g',{},svg),effects=element('g',{},layer);
  const sprites=world.balls.map(b=>({trail:element('path',{fill:'none',stroke:'#a9ff48','stroke-width':6,'stroke-linecap':'round',opacity:.22},layer),ball:element('circle',{cx:b.x,cy:b.y,r:11,fill:'url(#steel)',stroke:'#c7ff8b','stroke-width':1},layer),history:[],generation:-1}));
  const paddles=world.flippers.map(()=>element('path',{fill:'#b0fa52',stroke:'#dcffba','stroke-width':2,'stroke-linejoin':'round'},layer));
- const flashes=Array(21).fill(0),particles=[];
+ const flashes=Array(21).fill(0),particles=[],bursts=[];let scoreKick=-Infinity,shake=-Infinity;
  const bumperNodes=bumpers.map((_,i)=>svg.querySelector('.bumper-'+i)),impactNodes=bumpers.map((_,i)=>svg.querySelector('.impact-'+i));
  const slingNodes=[0,1].map(i=>svg.querySelector('.sling-effect-'+i));
  function sync(){field.classList.toggle('paused',paused);pause.textContent=paused?'继续':'暂停';pause.setAttribute('aria-pressed',String(paused));accumulator=0;}
@@ -47,7 +49,17 @@ try{
      while(accumulator>=STEP){
        world.step(STEP,input);accumulator-=STEP;
        for(const event of world.events){
+         const award=score.hit(event,world.time);scoreKick=world.time;
          flashes[event.index]=world.time;
+         if(!preference.matches){
+           const label=element('text',{x:event.x,y:event.y-40,fill:award.burst?'#fff5ab':'#d6ffae','font-family':'monospace','font-weight':'bold','font-size':award.burst?38:23,'text-anchor':'middle'},effects);
+           label.textContent='+'+award.points;bursts.push({node:label,x:event.x,y:event.y-40,born:world.time,kind:'label',life:.7});
+           if(award.burst){
+             shake=world.time;
+             for(let j=0;j<2;j++){const ring=element('circle',{cx:event.x,cy:event.y,r:20,fill:'none',stroke:j?'#ddff9e':'#f5ffd9','stroke-width':j?2:6},effects);bursts.push({node:ring,born:world.time,kind:'ring',life:.65,offset:j*35});}
+             for(let k=0;k<32;k++){const a=k*Math.PI/16,v=250+(k%5)*95;particles.push({node:element('rect',{width:k%3?10:20,height:3,fill:k%3?'#bbff64':'#fff2a8'},effects),x:event.x,y:event.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,born:world.time});}
+           }
+         }
          for(let k=0;k<(event.type==='sling'?16:6);k++){
            const angle=k*Math.PI*2/(event.type==='sling'?16:6)+world.time;
            particles.push({node:element('rect',{width:event.type==='sling'?9:4,height:4,fill:'#c3ff7e'},effects),x:event.x,y:event.y,vx:Math.cos(angle)*(event.type==='sling'?420:200),vy:Math.sin(angle)*(event.type==='sling'?420:200),born:world.time});
@@ -55,6 +67,11 @@ try{
        }
      }
      for(let i=particles.length-1;i>=0;i--){const p=particles[i],age=world.time-p.born;if(age>.38){p.node.remove();particles.splice(i,1);continue;}p.node.setAttribute('x',p.x+p.vx*age);p.node.setAttribute('y',p.y+p.vy*age);p.node.setAttribute('opacity',1-age/.38);}
+     for(let i=bursts.length-1;i>=0;i--){const b=bursts[i],age=world.time-b.born;if(age>b.life){b.node.remove();bursts.splice(i,1);continue;}b.node.setAttribute('opacity',1-age/b.life);if(b.kind==='ring')b.node.setAttribute('r',20+b.offset+age*330);else b.node.setAttribute('y',b.y-age*100);}
+     score.expire(world.time);scoreNode.textContent=String(score.total).padStart(8,'0');comboNode.textContent=String(score.combo);multiplierNode.textContent='×'+score.multiplier;
+     comboLife.style.transform='scaleX('+Math.max(0,1-(world.time-score.lastHit)/1.5)+')';
+     const kick=world.time-scoreKick;scoreNode.style.transform=!preference.matches&&kick<.18?'scale('+(1+.12*Math.sin(kick/.18*Math.PI))+')':'';
+     const shakeAge=world.time-shake;field.style.transform=!preference.matches&&shakeAge<.18?'translate('+Math.sin(shakeAge*110)*3*(1-shakeAge/.18)+'px,'+Math.cos(shakeAge*90)*2*(1-shakeAge/.18)+'px)':'';
      world.balls.forEach((b,i)=>{
        const s=sprites[i];if(s.generation!==b.generation){s.history=[];s.generation=b.generation;}
        const visible=b.ready<=world.time;s.ball.style.display=visible?'':'none';s.trail.style.display=visible?'':'none';
