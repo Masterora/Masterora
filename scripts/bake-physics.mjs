@@ -1,7 +1,7 @@
 // GitHub README cannot execute JS: render a short replay from the same simulator.
 import {readFileSync,writeFileSync} from 'node:fs';
-import {World,STEP} from '../physics.mjs';
-const w=new World(),duration=24,frames=[[],[],[]],flips=[[],[]],events=Array.from({length:19},()=>[]);
+import {World,STEP,slings} from '../physics.mjs';
+const w=new World(),duration=24,frames=[[],[],[]],flips=[[],[]],events=Array.from({length:21},()=>[]);
 for(let step=0;step<=duration/STEP;step++){
  const percent=(step*STEP/duration*100).toFixed(5);
  if(step%8===0){
@@ -20,10 +20,21 @@ events.forEach((times,i)=>{
  }
  css+=`.bumper-${i}{animation:physicalKick${i} 24s linear infinite}.impact-${i}{animation:physicalBurst${i} 24s linear infinite}@keyframes physicalKick${i}{${kick.join('')}}@keyframes physicalBurst${i}{${burst.join('')}}`;
 });
-css+='@media(prefers-reduced-motion:reduce){*{animation:none!important}.impact{opacity:0}.moving-ball{display:none}}';
+slings.forEach((polygon,i)=>{
+ const index=19+i;
+ css+=`.sling-effect-${i}{animation:physicalBurst${index} 24s linear infinite;transform-origin:${i?1710:245}px 610px;opacity:0}`;
+});
+css+='@media(prefers-reduced-motion:reduce){*{animation:none!important}.impact,.sling-effect{opacity:0}.moving-ball{display:none}}';
 let svg=readFileSync(new URL('../assets/tech-pinball-v1.svg',import.meta.url),'utf8');
 svg=svg.replace('</style>',css+'</style>').replace(/animation:ball(\d) (\d+)s (-?[\d.]+)s/g,(_,i,d,delay)=>`animation:ball${i} 24s ${(-24+Number(delay)+Number(d)).toFixed(3)}s`);
 svg=svg.replace('M1310 700H1700V595','M1275 700H1615L1800 585').replace('M1310 720H1725V595','M1275 720H1625L1820 597');
 svg=svg.replace('Three green pinballs ricochet between nineteen technology bumpers, triggering synchronized kicks, rings and pixel sparks.','A physics-simulated replay with gravity, bumper impacts and moving flippers. Open the interactive page to play.');
-writeFileSync(new URL('../assets/tech-pinball-v2.svg',import.meta.url),svg);
+const slingEffects=slings.map((polygon,i)=>{
+ const cx=i?1710:245,cy=610;
+ const path=polygon.map((p,j)=>(j?'L':'M')+p.join(' ')).join(' ')+'Z';
+ const rays=Array.from({length:10},(_,k)=>{const a=k*Math.PI/5;return `<path d="M${cx+Math.cos(a)*65} ${cy+Math.sin(a)*65}l${Math.cos(a)*24} ${Math.sin(a)*24}"/>`;}).join('');
+ return `<g class="sling-effect sling-effect-${i}" fill="none" stroke="#d4ff91" stroke-width="4"><path d="${path}" fill="#9aff36" fill-opacity=".4"/><circle cx="${cx}" cy="${cy}" r="60" stroke-width="2"/>${rays}</g>`;
+}).join('');
+svg=svg.replace('</svg>',slingEffects+'</svg>');
+writeFileSync(new URL('../assets/tech-pinball-v3.svg' ,import.meta.url),svg);
 console.log(`Baked ${duration}s, ${w.hits} hits, ${Math.round(svg.length/1024)} KiB`);
