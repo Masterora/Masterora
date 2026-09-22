@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="120" viewBox="0 0 1000 120" role="img" aria-labelledby="title desc">
+<title id="title">Technology icon chase</title>
+<desc id="desc">An animated arcade character travels through a neon circuit and consumes technology icons.</desc>
+<defs>
+  <linearGradient id="lane"><stop stop-color="#61ffb0" stop-opacity="0"/><stop offset=".16" stop-color="#61ffb0"/><stop offset=".78" stop-color="#2ddde9"/><stop offset="1" stop-color="#ff4a9e" stop-opacity="0"/></linearGradient>
+  <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<style>
+  .player{animation:travel 12s linear infinite}.mouth{transform-origin:0 0;animation:mouth .34s ease-in-out infinite alternate}
+  .bean-1{animation:bean-1 12s linear infinite}.bean-2{animation:bean-2 12s linear infinite}.bean-3{animation:bean-3 12s linear infinite}
+  .bean-4{animation:bean-4 12s linear infinite}.bean-5{animation:bean-5 12s linear infinite}.bean-6{animation:bean-6 12s linear infinite}
+  .pellets{stroke-dasharray:2 37;animation:pellets 12s linear infinite}.scanner{animation:scanner 4s ease-in-out infinite}
+  @keyframes travel{from{transform:translateX(52px)}to{transform:translateX(948px)}}@keyframes mouth{from{transform:scaleY(.14)}to{transform:scaleY(1)}}
+  @keyframes bean-1{0%,13%{opacity:1}15%,96%{opacity:0}100%{opacity:1}}@keyframes bean-2{0%,27%{opacity:1}29%,96%{opacity:0}100%{opacity:1}}
+  @keyframes bean-3{0%,43%{opacity:1}45%,96%{opacity:0}100%{opacity:1}}@keyframes bean-4{0%,59%{opacity:1}61%,96%{opacity:0}100%{opacity:1}}
+  @keyframes bean-5{0%,74%{opacity:1}77%,96%{opacity:0}100%{opacity:1}}@keyframes bean-6{0%,89%{opacity:1}92%,96%{opacity:0}100%{opacity:1}}
+  @keyframes pellets{to{stroke-dashoffset:-896}}@keyframes scanner{50%{opacity:.18}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important}.player{transform:translateX(52px)}}
+</style>
+<path d="M0 20h74l12-12h828l12 12h74M0 100h74l12 12h828l12-12h74" fill="none" stroke="#294d3f"/>
+<path d="M62 60h900" stroke="url(#lane)" stroke-width="2"/>
+<path class="pellets" d="M62 60h900" stroke="#6affb7" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+<g class="scanner" fill="none" stroke="#2ddde9" opacity=".55"><path d="M116 31v58M935 31v58"/><path d="M105 42h22M924 78h22"/></g>
+
+<g class="bean-1" transform="translate(180 60)" font-family="Arial,sans-serif" font-size="15" font-weight="700" text-anchor="middle" fill="#07100d" stroke="#61ffb0">
+  <circle r="20" fill="#07100d"/><text y="5" fill="#61ffb0" stroke="none">GO</text>
+</g>
+<g class="bean-2" transform="translate(310 60)" fill="none" stroke="#2ddde9" stroke-width="2">
+  <circle r="20" fill="#07100d" stroke="#61ffb0"/>
+  <path d="M-11-2c0-8 4-11 11-11h8v9H0c-3 0-4 2-4 4v3h-7Zm22 4c0 8-4 11-11 11h-8V4h8c3 0 4-2 4-4v-3h7Z"/>
+  <circle cx="5" cy="-9" r="1.5" fill="#2ddde9" stroke="none"/><circle cx="-5" cy="9" r="1.5" fill="#61ffb0" stroke="none"/>
+</g>
+<g class="bean-3" transform="translate(450 60)" fill="none" stroke="#2ddde9" stroke-width="1.6">
+  <circle r="20" fill="#07100d" stroke="#61ffb0"/>
+  <ellipse rx="15" ry="6"/><ellipse rx="15" ry="6" transform="rotate(60)"/><ellipse rx="15" ry="6" transform="rotate(120)"/><circle r="2.6" fill="#2ddde9"/>
+</g>
+<g class="bean-4" transform="translate(590 60)" font-family="Arial,sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+  <circle r="20" fill="#07100d" stroke="#61ffb0"/><rect x="-12" y="-12" width="24" height="24" fill="#2ddde9" stroke="none"/><text y="5" fill="#07100d">TS</text>
+</g>
+<g class="bean-5" transform="translate(730 60)" fill="none" stroke="#61ffb0" stroke-width="1.8">
+  <circle r="20" fill="#07100d"/>
+  <ellipse cy="-8" rx="11" ry="5"/><path d="M-11-8v16c0 3 5 5 11 5s11-2 11-5V-8M-11 0c0 3 5 5 11 5s11-2 11-5"/>
+</g>
+<g class="bean-6" transform="translate(860 60)" fill="none" stroke="#2ddde9" stroke-width="1.6">
+  <circle r="20" fill="#07100d" stroke="#61ffb0"/>
+  <path d="M-13 0h20v-5h-5v-5h-5v5h-5v-5h-5v5h-5v5h-5v4h4c2 7 8 10 15 9 7-1 11-5 14-11H7"/>
+  <path d="M-12-3h4M-6-3h4M0-3h4"/>
+</g>
+
+<g transform="translate(0 60)" filter="url(#glow)">
+  <g class="player">
+    <circle r="19" fill="#ff9b50"/>
+    <path class="mouth" d="M0 0 24-14 24 14Z" fill="#070c0f"/>
+    <circle cx="-3" cy="-9" r="2" fill="#07100d"/>
+  </g>
+</g>
+</svg>
