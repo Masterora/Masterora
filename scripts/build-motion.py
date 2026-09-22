@@ -17,61 +17,81 @@ regions = [
     (950, 595, 140, 125), (1200, 600, 140, 140),
     (1590, 610, 145, 138),
 ]
-defs, holes, tiles, styles = [], [], [], []
-for i, (cx, cy, width, height) in enumerate(regions):
-    rect = f'<rect x="{cx-width/2}" y="{cy-height/2}" width="{width}" height="{height}"/>'
-    defs.append(f'<clipPath id="tile-{i}">{rect}</clipPath>')
-    holes.append(rect)
-    # Three rows counterflow, then relay a wave left-to-right before docking.
-    lane = 0 if i < 7 else 1 if i < 15 else 2
-    direction = -1 if lane == 1 else 1
-    shift = direction * (38 + i % 3 * 12)
-    lift = 14 + i % 4 * 4
-    delay = -round(cx / 1983 * 1.15 + lane * .22, 2)
+# A shared timeline drives balls, bumper kicks and impact debris.
+import math
+positions = [(270+i*232, 215) for i in range(7)] + [(370+i*216, 385) for i in range(7)] + [(490+i*250, 550) for i in range(5)]
+routes = [[0,8,2,10,4,12,6], [7,1,9,3,11,5,13], [14,16,15,18,17]]
+styles, balls, tiles, defs, impacts = [], [], [], [], []
+hits = {}
+for lane, route in enumerate(routes):
+    duration = 12 + lane * 2
+    points = [(1850,675),(1850,110),(1630,95)]
+    for idx in route:
+        x,y=positions[idx]
+        points.append((x,y+69))
+    points += [(1040 if lane%2 else 780,695),(170,640),(110,110),(1850,110),(1850,675)]
+    frames = []
+    for j,(x,y) in enumerate(points):
+        time=j/(len(points)-1)*100
+        frames.append(f'{time:.5f}%{{transform:translate({x}px,{y}px)}}')
+        if 3 <= j < 3+len(route):
+            hits.setdefault(route[j-3],(time,duration))
+    styles.append(f'@keyframes ball{lane}{{{"".join(frames)}}}')
+    for tail in range(6, -1, -1):
+        opacity = 1 if tail==0 else .2*(1-tail/7)
+        radius = 11 if tail==0 else 10-tail
+        fill = 'url(#steel)' if tail == 0 else '#a5ff35'
+        halo = '<circle r="19" fill="none" stroke="#a5ff35" stroke-opacity=".2"/>' if tail == 0 else ''
+        balls.append(f'<g class="moving-ball" style="animation:ball{lane} {duration}s {-duration+tail*.028}s linear infinite"><circle r="{radius}" fill="{fill}" opacity="{opacity}"/>{halo}</g>')
+
+for i,((cx,cy,w,h),(x,y)) in enumerate(zip(regions,positions)):
+    defs.append(f'<clipPath id="tile-{i}"><rect x="{cx-w/2}" y="{cy-h/2}" width="{w}" height="{h}"/></clipPath>')
+    t,duration=hits[i]
     styles.append(f"""
-    .piece-{i}{{transform-origin:{cx}px {cy}px;animation:sequence-{i} 16s {delay}s cubic-bezier(.4,0,.2,1) infinite}}
-    @keyframes sequence-{i}{{
-      0%,8%,100%{{transform:translate(0,0);opacity:1}}
-      18%{{transform:translate({shift}px,0);opacity:1}}
-      25%{{transform:translate({shift}px,{-lift}px);opacity:1}}
-      33%,39%{{transform:translate(0,0);opacity:1}}
-      47%{{transform:translate(0,{-lift*1.7}px) scale(1.08);opacity:1}}
-      54%,60%{{transform:translate(0,0) scale(1);opacity:1}}
-      64%{{transform:translate({-direction*18}px,0);opacity:.65}}
-      68%,73%{{transform:translate(0,0);opacity:1}}
-      82%{{transform:translate({-shift*.5}px,{lift*.5}px) rotate({direction*5}deg);opacity:.85}}
-      91%{{transform:translate(0,0) rotate(0deg);opacity:1}}
-    }}""")
-    tiles.append(f'<g class="reactive" data-index="{i}" data-x="{cx}" data-y="{cy}"><g class="piece piece-{i}"><g clip-path="url(#tile-{i})"><use href="#artwork"/></g></g></g>')
-svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="1983" height="793" viewBox="0 0 1983 793" role="img" aria-labelledby="title desc">
-<title id="title">Technology in motion</title><desc id="desc">Technology symbols counterflow in lanes, relay a wave, shift and dock in a sixteen-second sequence.</desc>
-<defs><image id="artwork" width="1983" height="793" href="data:image/png;base64,{image}"/>
-{''.join(defs)}
-<mask id="background"><rect width="1983" height="793" fill="white"/><g fill="black">{''.join(holes)}</g></mask>
-<linearGradient id="trail"><stop stop-color="#8aff00" stop-opacity="0"/><stop offset=".5" stop-color="#8aff00"/><stop offset="1" stop-color="#8aff00" stop-opacity="0"/></linearGradient></defs>
-<style>{''.join(styles)}
-.rail{{stroke-dasharray:3 14 3 14 90 850;animation:travel 7s linear infinite}}
-.reverse{{animation-direction:reverse;animation-duration:9s}}
-.packet{{stroke-dasharray:4 10 18 1700;animation:travel 6s linear infinite}}
-.echo{{fill:none;stroke:#a3ff51;stroke-width:1;animation:echo 16s ease-out infinite;opacity:0}}
-@keyframes echo{{0%,40%,58%,100%{{transform:scale(.85);opacity:0}}44%{{transform:scale(.9);opacity:.65}}54%{{transform:scale(1.35);opacity:0}}}}
-.reactive{{transition:transform .55s cubic-bezier(.2,.8,.2,1)}}
+    .bumper-{i}{{transform-origin:{x}px {y}px;animation:kick{i} {duration}s linear infinite}}
+    .impact-{i}{{transform-origin:{x}px {y}px;animation:burst{i} {duration}s ease-out infinite;opacity:0}}
+    @keyframes kick{i}{{0%,{t-.1:.5f}%,{t+6:.5f}%,100%{{transform:translate(0,0) scale(1)}}{t+1.1:.5f}%{{transform:translate(0,-15px) scale(1.18)}}{t+3.3:.5f}%{{transform:translate(0,5px) scale(.95)}}}}
+    @keyframes burst{i}{{0%,{t-.1:.5f}%,{t+6:.5f}%,100%{{opacity:0;transform:scale(.85)}}{t+.2:.5f}%{{opacity:1;transform:scale(1)}}{t+5.9:.5f}%{{opacity:0;transform:scale(1.85)}}}}
+    """)
+    tiles.append(f'<g class="bumper bumper-{i}"><circle cx="{x}" cy="{y}" r="58" fill="#080c09" stroke="#344532" stroke-width="2"/><circle cx="{x}" cy="{y}" r="64" fill="none" stroke="#7daa4c" stroke-opacity=".4" stroke-dasharray="16 84"/><g transform="translate({x},{y}) scale(.63) translate({-cx},{-cy})"><g clip-path="url(#tile-{i})"><use href="#artwork"/></g></g></g>')
+    sparks=''.join(f'<rect x="{x+math.cos(k*math.pi/4)*77-3:.2f}" y="{y+math.sin(k*math.pi/4)*77-3:.2f}" width="{9 if k%2 else 5}" height="5" fill="#b6ff55"/>' for k in range(8))
+    impacts.append(f'<g class="impact impact-{i}"><circle cx="{x}" cy="{y}" r="66" fill="none" stroke="#b6ff55" stroke-width="3"/>{sparks}</g>')
+svg=f'''<svg xmlns="http://www.w3.org/2000/svg" width="1983" height="793" viewBox="0 0 1983 793" role="img" aria-labelledby="title desc">
+<title id="title">Technology pinball</title><desc id="desc">Three green pinballs ricochet between nineteen technology bumpers, triggering synchronized kicks, rings and pixel sparks.</desc>
+<defs><image id="artwork" width="1983" height="793" href="data:image/png;base64,{image}"/>{''.join(defs)}
+<radialGradient id="steel" cx=".3" cy=".25"><stop stop-color="#fff"/><stop offset=".25" stop-color="#d7ff9d"/><stop offset=".65" stop-color="#9aff2b"/><stop offset="1" stop-color="#315b0c"/></radialGradient>
+<linearGradient id="rail"><stop stop-color="#283c23"/><stop offset=".45" stop-color="#a5ff35"/><stop offset="1" stop-color="#283c23"/></linearGradient>
+<pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#20311c"/></pattern></defs>
+<style>
+{''.join(styles)}
+.lane-light{{stroke-dasharray:55 1300;animation:railflow 3s linear infinite}}
+@keyframes railflow{{to{{stroke-dashoffset:-1355}}}}
+.flipper-left{{transform-origin:700px 705px;animation:flipleft 2.4s ease-in-out infinite}}
+.flipper-right{{transform-origin:1240px 705px;animation:flipright 3.2s .4s ease-in-out infinite}}
+@keyframes flipleft{{0%,40%,65%,100%{{transform:rotate(0)}}48%,54%{{transform:rotate(-28deg)}}}}
+@keyframes flipright{{0%,40%,65%,100%{{transform:rotate(0)}}48%,54%{{transform:rotate(28deg)}}}}
+.kicker{{animation:kicker 1.5s ease-in-out infinite;transform-origin:1850px 685px}}
+@keyframes kicker{{0%,70%,100%{{transform:scaleY(1)}}85%{{transform:scaleY(.55)}}}}
+.launch .flipper-left{{transform:rotate(-28deg);animation:none}}.launch .flipper-right{{transform:rotate(28deg);animation:none}}
 .paused *{{animation-play-state:paused!important}}
-@keyframes travel{{to{{stroke-dashoffset:-1960}}}}
-@media(prefers-reduced-motion:reduce){{.piece{{animation:none;opacity:1}}.rail,.packet,.echo{{animation:none}}.reactive{{transition:none}}}}
+@media(prefers-reduced-motion:reduce){{*{{animation:none!important}}.impact{{opacity:0}}.moving-ball{{display:none}}}}
 </style>
-<rect width="1983" height="793" fill="#000"/>
-<use href="#artwork" mask="url(#background)" opacity=".7"/>
-<g fill="none" stroke="url(#trail)" stroke-width="2" opacity=".65">
-<path class="rail" d="M100 218H580V358H1120V218H1860"/>
-<path class="rail reverse" d="M140 518H620V650H1280V518H1850"/>
-<path class="rail" d="M280 402H920V370H1750"/>
+<rect width="1983" height="793" fill="#030503"/>
+
+<rect x="78" y="58" width="1827" height="685" rx="48" fill="url(#grid)" stroke="#273322" stroke-width="2"/>
+<g fill="none" stroke="url(#rail)" stroke-width="4" stroke-linejoin="round">
+<path d="M1800 690V142Q1800 105 1760 105H190Q130 105 130 165V585L315 700H630M1310 700H1700V595"/>
+<path d="M1820 710V130Q1820 83 1770 83H175Q108 83 108 157V597L304 720H630M1310 720H1725V595"/>
+<path d="M1840 720V155Q1840 65 1740 65" stroke="#526945"/>
+<path d="M1865 720V155Q1865 45 1740 45" stroke="#526945"/>
 </g>
-<g fill="none" stroke="#a3ff51" stroke-width="3" opacity=".8">
-<path class="packet" d="M120 265H520L580 325H980L1060 245H1770"/>
-<path class="packet reverse" d="M230 580H620L700 660H1430L1500 590H1820"/>
-</g>
+<g fill="none" stroke="#b4ff51" stroke-width="5"><path class="lane-light" d="M130 165V585L315 700H630"/><path class="lane-light" d="M1800 690V142Q1800 105 1760 105H190"/></g>
+<g fill="#a7ef45" opacity=".7">{''.join(f'<rect x="{220+i*38}" y="130" width="20" height="4"/>' for i in range(38))}</g>
+<g fill="#111b0d" stroke="#739b43" stroke-width="2"><path d="M190 530L330 650H250L185 590Z"/><path d="M1640 650L1770 530V590L1700 650Z"/></g>
 {''.join(tiles)}
-{''.join(f'<rect class="echo" x="{x-52}" y="{y-52}" width="104" height="104" rx="2" style="transform-origin:{x}px {y}px;animation-delay:{-round(x/1983*1.15+(0 if i<7 else 1 if i<15 else 2)*.22,2)}s"/>' for i,(x,y,w,h) in enumerate(regions) if i%3==1)}
-</svg>"""
-(ROOT / "assets/tech-motion-v4.svg").write_text(svg)
+<g fill="#a6ff36" stroke="#dbffb0" stroke-width="2"><path class="flipper-left" d="M700 689Q675 705 700 721L883 737Q910 732 893 712Z"/><path class="flipper-right" d="M1240 689Q1265 705 1240 721L1057 737Q1030 732 1047 712Z"/></g>
+<g fill="#182b0b" stroke="#a6ff36" stroke-width="3"><circle cx="700" cy="705" r="12"/><circle cx="1240" cy="705" r="12"/></g>
+<path class="kicker" d="M1837 720H1863L1837 710L1863 700L1837 690L1863 680H1837" fill="none" stroke="#a6ff36" stroke-width="3"/>
+{''.join(impacts)}{''.join(balls)}
+</svg>'''
+(ROOT / "assets/tech-pinball-v1.svg").write_text(svg)

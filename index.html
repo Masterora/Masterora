@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#000000">
-<title>Der_Orange / Pixel field</title>
+<title>Der_Orange / Pinball</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#000;color:#ccc;font-family:monospace}
 main{min-height:100svh;display:grid;place-items:center;padding:24px}
@@ -18,42 +18,30 @@ a:hover,button:hover{color:#8aff00}a:focus-visible,button:focus-visible{outline:
 </style>
 </head>
 <body>
-<main><div id="field" tabindex="0" role="button" aria-label="Disrupt the pixel field. Move your pointer, click, tap, or press Enter.">
-<img src="./assets/tech-motion-v4.svg" alt="Monochrome technology symbols, staggered rails and green pixel fragments">
+<main><div id="field" tabindex="0" role="button" aria-label="Activate the pinball flippers. Click, tap, or press Enter.">
+<img src="./assets/tech-pinball-v1.svg" alt="Technology pinball with green balls, bumpers and pixel sparks">
 </div></main>
 <nav><a href="https://github.com/Masterora" aria-label="Back to GitHub">↖ GITHUB</a><button id="motion" type="button" aria-pressed="false">PAUSE</button></nav>
 <script>
 const field=document.querySelector('#field'),motion=document.querySelector('#motion');
 const preference=matchMedia('(prefers-reduced-motion: reduce)');
-let paused=preference.matches, pieces=[],resetTimer;
+let paused=preference.matches,resetTimer;
 function sync(){
   field.classList.toggle('paused',paused);
-  if(paused){clearTimeout(resetTimer);pieces.forEach(p=>p.style.transform='')}
+  if(paused){clearTimeout(resetTimer);field.classList.remove('launch')}
   motion.textContent=paused?'PLAY':'PAUSE';
   motion.setAttribute('aria-pressed',String(paused));
 }
-fetch('./assets/tech-motion-v4.svg').then(r=>{if(!r.ok)throw Error('Artwork unavailable');return r.text()}).then(markup=>{
-  field.innerHTML=markup;pieces=[...field.querySelectorAll('.reactive')];sync();
+fetch('./assets/tech-pinball-v1.svg').then(r=>{if(!r.ok)throw Error('Artwork unavailable');return r.text()}).then(markup=>{
+  field.innerHTML=markup;sync();
 }).catch(()=>{motion.hidden=true});
-function scatter(x,y){
+function flip(){
   if(paused||preference.matches)return;
-  const box=field.getBoundingClientRect();
-  const px=x/box.width*1983,py=y/box.height*793;
-  pieces.forEach(piece=>{
-    const dx=Number(piece.dataset.x)-px,dy=Number(piece.dataset.y)-py;
-    const distance=Math.hypot(dx,dy)||1,force=90*Math.exp(-distance/650);
-    piece.style.transform='translate('+dx/distance*force+'px,'+dy/distance*force+'px)';
-  });
-  clearTimeout(resetTimer);resetTimer=setTimeout(()=>pieces.forEach(p=>p.style.transform=''),650);
+  field.classList.add('launch');
+  clearTimeout(resetTimer);resetTimer=setTimeout(()=>field.classList.remove('launch'),220);
 }
-field.addEventListener('pointerdown',e=>{const r=field.getBoundingClientRect();scatter(e.clientX-r.left,e.clientY-r.top)});
-field.addEventListener('pointermove',e=>{
-  if(paused||preference.matches)return;
-  const r=field.getBoundingClientRect(),nx=(e.clientX-r.left)/r.width-.5,ny=(e.clientY-r.top)/r.height-.5;
-  pieces.forEach((p,i)=>p.style.transform='translate('+nx*(12+i%4*5)+'px,'+ny*(12+i%3*7)+'px)');
-});
-field.addEventListener('pointerleave',()=>pieces.forEach(p=>p.style.transform=''));
-field.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();scatter(field.clientWidth/2,field.clientHeight/2)}});
+field.addEventListener('pointerdown',flip);
+field.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.repeat){e.preventDefault();flip()}});
 motion.addEventListener('click',()=>{paused=!paused;sync()});
 preference.addEventListener('change',e=>{paused=e.matches;sync()});
 sync();
