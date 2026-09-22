@@ -53,3 +53,5 @@ const slingEffects=slings.map((polygon,i)=>{
 svg=svg.replace('</svg>',slingEffects+overlays+'</svg>');
 writeFileSync(new URL('../assets/tech-pinball-v4.svg' ,import.meta.url),svg);
 console.log(`Baked ${duration}s, ${w.hits} hits, ${Math.round(svg.length/1024)} KiB`);
+
+await import('./build-themes.mjs');
