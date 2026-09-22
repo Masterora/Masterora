@@ -1,85 +1,81 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#060606" />
-<title>Der_Orange / anomaly</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>Der_Orange / Pixel field</title>
 <style>
-  *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#060606}
-  body{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;cursor:none;touch-action:none;user-select:none}
-  #field{position:fixed;inset:0;width:100%;height:100%;opacity:.78}
-  #stage{position:fixed;inset:0;display:grid;place-items:center;transform-style:preserve-3d;will-change:transform}
-  #art{width:min(1220px,112vw);filter:drop-shadow(0 36px 80px #000);will-change:transform}
-  #art svg{display:block;width:100%;height:auto;overflow:hidden}
-  #art .core,#art .shard,#art .glyph use{animation:none!important;will-change:transform}
-  #art .wire{stroke-opacity:.13}
-  #art .pulse{stroke-width:1.15}
-  #cursor{position:fixed;left:0;top:0;width:34px;height:34px;border:1px solid rgba(242,106,33,.72);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:screen;transition:width .16s,height .16s,border-color .16s;z-index:4}
-  #cursor::before,#cursor::after{content:"";position:absolute;left:50%;top:50%;background:#fff7e6;opacity:.62;transform:translate(-50%,-50%)}
-  #cursor::before{width:4px;height:1px}#cursor::after{width:1px;height:4px}
-  body.overload #cursor{width:88px;height:88px;border-color:#fff7e6}
-  .shock{position:fixed;width:20px;height:20px;border:1px solid #f26a21;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);animation:shock .72s cubic-bezier(.16,.8,.32,1) forwards;z-index:3}
-  @keyframes shock{to{width:min(130vmax,1400px);height:min(130vmax,1400px);opacity:0;border-width:9px}}
-  .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-  @media(max-aspect-ratio:4/5){#art{width:178vw;transform:rotate(90deg)}#cursor{display:none}}
-  @media(prefers-reduced-motion:reduce){#field{display:none}#cursor{transition:none}.shock{display:none}}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#000;color:#ccc;font-family:monospace}
+main{min-height:100svh;display:grid;place-items:center;padding:24px}
+#field{position:relative;width:min(1500px,100%);aspect-ratio:1983/793;outline:none;touch-action:pan-y}
+#field:focus-visible{outline:1px solid #8aff00;outline-offset:12px}
+img,canvas{display:block;width:100%;height:100%;object-fit:contain}
+canvas{position:absolute;inset:0;pointer-events:none}
+nav{position:fixed;bottom:24px;left:28px;right:28px;display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.08em}
+a,button{color:#999;background:none;border:0;font:inherit;text-decoration:none;padding:12px;cursor:pointer}
+a:hover,button:hover{color:#8aff00}a:focus-visible,button:focus-visible{outline:1px solid #8aff00}
+@media(max-width:600px){main{padding:12px}nav{left:8px;right:8px;bottom:12px}}
 </style>
 </head>
 <body>
-<canvas id="field" aria-hidden="true"></canvas>
-<main id="stage" aria-label="Interactive technology anomaly"><div id="art"></div></main>
-<div id="cursor" aria-hidden="true"></div>
-<p class="sr">Move the pointer to bend the data field. Click or tap to overload the anomaly.</p>
+<main><div id="field" tabindex="0" role="button" aria-label="Disrupt the pixel field. Move your pointer, click, tap, or press Enter.">
+<img src="./assets/tech-field.png" alt="Monochrome technology symbols, staggered rails and green pixel fragments">
+<canvas aria-hidden="true"></canvas></div></main>
+<nav><a href="https://github.com/Masterora" aria-label="Back to GitHub">↖ GITHUB</a><button id="motion" type="button" aria-pressed="false">PAUSE</button></nav>
 <script>
-const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const canvas=document.querySelector('#field'),ctx=canvas.getContext('2d'),stage=document.querySelector('#stage'),art=document.querySelector('#art'),cursor=document.querySelector('#cursor');
-let w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),target={x:.5,y:.5},pointer={x:.5,y:.5},energy=0,last=performance.now(),glyphs=[],shards=[];
-const resize=()=>{w=innerWidth;h=innerHeight;dpr=Math.min(devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0)};
-addEventListener('resize',resize);resize();
-
-fetch('./assets/tech-singularity.svg').then(r=>r.text()).then(markup=>{
-  art.innerHTML=markup;
-  const svg=art.querySelector('svg');svg.removeAttribute('width');svg.removeAttribute('height');
-  glyphs=[...svg.querySelectorAll('.glyph use')];shards=[...svg.querySelectorAll('.shard')];
-  glyphs.forEach((el,i)=>{el.dataset.depth=String(.25+(i%5)*.17)});
-});
-
-const particles=Array.from({length:reduce?0:96},(_,i)=>({x:Math.random()*w,y:Math.random()*h,vx:0,vy:0,r:i%13===0?1.8:.65,a:.15+Math.random()*.48}));
-function move(e){target.x=e.clientX/w;target.y=e.clientY/h;cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px'}
-addEventListener('pointermove',move,{passive:true});
-addEventListener('pointerdown',e=>{
-  move(e);energy=1;document.body.classList.add('overload');
-  const ring=document.createElement('i');ring.className='shock';ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';document.body.append(ring);ring.addEventListener('animationend',()=>ring.remove());
-  particles.forEach(p=>{const dx=p.x-e.clientX,dy=p.y-e.clientY,d=Math.hypot(dx,dy)||1,force=18+Math.random()*18;p.vx+=dx/d*force;p.vy+=dy/d*force});
-  setTimeout(()=>document.body.classList.remove('overload'),420);
-},{passive:true});
-
-function draw(dt){
-  ctx.clearRect(0,0,w,h);ctx.globalCompositeOperation='lighter';
-  const cx=w*.5+(pointer.x-.5)*54,cy=h*.5+(pointer.y-.5)*34;
-  for(const p of particles){
-    const dx=cx-p.x,dy=cy-p.y,dist=Math.hypot(dx,dy)||1;
-    p.vx+=dx/dist*.016*dt;p.vy+=dy/dist*.016*dt;
-    const mx=pointer.x*w-p.x,my=pointer.y*h-p.y,md=Math.hypot(mx,my)||1;
-    if(md<150){const repel=(150-md)/150*.05*dt;p.vx-=mx/md*repel;p.vy-=my/md*repel}
-    p.vx*=Math.pow(.985,dt);p.vy*=Math.pow(.985,dt);p.x+=p.vx*dt;p.y+=p.vy*dt;
-    if(dist<44){p.x=Math.random()<.5?-12:w+12;p.y=Math.random()*h;p.vx=p.vy=0}
-    ctx.fillStyle=`rgba(242,106,33,${p.a})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
-    if(dist<260){ctx.strokeStyle=`rgba(241,238,231,${(1-dist/260)*.055})`;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(cx,cy);ctx.stroke()}
+const field=document.querySelector('#field'),canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),source=document.querySelector('img'),motion=document.querySelector('#motion');
+const preference=matchMedia('(prefers-reduced-motion: reduce)');
+let paused=preference.matches,frameId=0,width=1,height=1,last=0,active=false,pointer={x:0,y:0},fragments=[];
+function bounds(){
+  const box=field.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2);
+  width=box.width;height=box.height;canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);
+}
+new ResizeObserver(bounds).observe(field);
+function imageBox(){
+  const iw=width,ih=iw*source.naturalHeight/source.naturalWidth;
+  return {x:(width-iw)/2,y:(height-ih)/2,w:iw,h:ih};
+}
+function updatePointer(e){const r=field.getBoundingClientRect();pointer={x:e.clientX-r.left,y:e.clientY-r.top};active=true}
+field.addEventListener('pointermove',updatePointer);
+field.addEventListener('pointerleave',()=>active=false);
+function burst(){
+  if(paused)return;
+  for(let i=0;i<55;i++){const angle=Math.random()*Math.PI*2,speed=30+Math.random()*140;
+    fragments.push({x:pointer.x,y:pointer.y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:.5+Math.random()*.7,size:1+Math.random()*5,green:i%3===0});
   }
-  ctx.globalCompositeOperation='source-over';
+  fragments=fragments.slice(-220);
 }
-
-function frame(now){
-  const dt=Math.min((now-last)/16.67,2);last=now;pointer.x+=(target.x-pointer.x)*.065;pointer.y+=(target.y-pointer.y)*.065;energy*=.92;
-  const nx=pointer.x-.5,ny=pointer.y-.5,burst=1+energy*.2;
-  stage.style.transform=`perspective(900px) rotateY(${nx*5}deg) rotateX(${-ny*4}deg) scale(${1+energy*.025})`;
-  shards.forEach((el,i)=>el.style.transform=`translate(${nx*(10+i*2)}px,${ny*(7+i)}px) scale(${burst})`);
-  glyphs.forEach((el,i)=>{const depth=+el.dataset.depth||.5,scatter=energy*(18+i%4*5),sx=((i%2)*2-1)*scatter;el.style.transform=`translate(${nx*depth*26+sx}px,${ny*depth*18+(i%3-1)*energy*12}px) rotate(${nx*depth*5}deg)`});
-  if(!reduce)draw(dt);requestAnimationFrame(frame);
+field.addEventListener('pointerdown',e=>{updatePointer(e);burst()});
+field.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pointer={x:width/2,y:height/2};burst()}});
+function render(time){
+  const dt=Math.min((time-last)/1000,.04);last=time;ctx.clearRect(0,0,width,height);
+  if(source.complete&&source.naturalWidth&&active){
+    const box=imageBox(),radius=Math.min(130,width*.2);
+    ctx.save();ctx.beginPath();ctx.rect(pointer.x-radius,pointer.y-radius,radius*2,radius*2);ctx.clip();
+    for(let y=Math.max(box.y,pointer.y-radius);y<Math.min(box.y+box.h,pointer.y+radius);y+=6){
+      const distance=Math.abs(y-pointer.y)/radius,strength=Math.pow(1-distance,2);
+      const dx=Math.sin(y*.13+time*.007)*strength*13;
+      ctx.fillStyle='#000';ctx.fillRect(pointer.x-radius,y,radius*2,6);
+      const sy=(y-box.y)/box.h*source.naturalHeight,sh=Math.min(6/box.h*source.naturalHeight,source.naturalHeight-sy);
+      if(sh>0)ctx.drawImage(source,0,sy,source.naturalWidth,sh,box.x+dx,y,box.w,6);
+    }
+    ctx.restore();ctx.fillStyle='#8aff00';ctx.fillRect(pointer.x+13,pointer.y+13,5,5);
+  }
+  fragments=fragments.filter(p=>p.life>0);
+  for(const p of fragments){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.exp(-dt*2);p.vy*=Math.exp(-dt*2);p.life-=dt;
+    ctx.globalAlpha=Math.min(p.life,1);ctx.fillStyle=p.green?'#8aff00':'#bdbdbd';ctx.fillRect(p.x,p.y,p.size,p.size);
+  }
+  ctx.globalAlpha=1;if(!paused&&!document.hidden)frameId=requestAnimationFrame(render);
 }
-requestAnimationFrame(frame);
+function sync(){
+  cancelAnimationFrame(frameId);motion.textContent=paused?'PLAY':'PAUSE';motion.setAttribute('aria-pressed',String(paused));
+  if(paused){ctx.clearRect(0,0,width,height);fragments=[]}else if(!document.hidden){last=performance.now();frameId=requestAnimationFrame(render)}
+}
+motion.addEventListener('click',()=>{paused=!paused;sync()});
+preference.addEventListener('change',e=>{paused=e.matches;sync()});
+document.addEventListener('visibilitychange',sync);
+bounds();sync();
 </script>
 </body>
 </html>
