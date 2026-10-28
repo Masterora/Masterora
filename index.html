@@ -11,10 +11,13 @@ body{background:#fff;color:#202820}#field{background:#fff;border-color:#d7dfd2;b
 .brand,.hint,.scoreboard span{color:#586451}.brand b{color:#346714}.scoreboard output{color:#293c22}.scoreboard .score-main output{color:#316a12;text-shadow:none}.combo-track{background:#e0e8da}.combo-track i{background:#437e21}
 button,a{background:#f7f9f5;border-color:#d4decf;color:#405137}button:hover,a:hover{border-color:#6d8c5a;color:#234917}button[aria-pressed=true]{color:#326413;border-color:#709253}.paddles button:active{background:#daf0c6;color:#21420f}button:focus-visible,a:focus-visible,#field:focus-visible{outline-color:#437e21}.error{color:#995000}
 }
+.scoreboard{display:grid;grid-template-columns:2.3fr 1fr 1fr 1fr;gap:0;border:1px solid #32412a;border-radius:12px;background:#0b1009;overflow:hidden}.scoreboard>div{padding:13px 20px;min-width:80px;border-left:1px solid #26341f}.scoreboard>div:first-child{border:0}.scoreboard .score-main output{font-size:32px}.combo-track{position:static;width:100%;margin-top:2px}.scoreboard .charged{color:#ffd76e;text-shadow:0 0 16px #ffd76e44}.scoreboard span{font-size:10px}
+@media(prefers-color-scheme:light){#field>svg .tech-icon{filter:invert(1) hue-rotate(180deg)}.scoreboard{background:#f6f8f4;border-color:#d4dfcd}.scoreboard>div{border-color:#dde5d8}.scoreboard .charged{color:#9b5b0a;text-shadow:none}}
+@media(max-width:800px){.scoreboard{width:100%;gap:0}.scoreboard>div{padding:12px;min-width:0}.scoreboard .score-main output{font-size:25px}}@media(max-width:380px){.scoreboard{grid-template-columns:2fr 1fr 1fr}}
 </style>
 </head>
 <body><main>
 <header><span class="brand"><b>●</b> TECH / PINBALL</span><div class="scoreboard" aria-label="记分板"><div class="score-main"><span>SCORE</span><output id="score">00000000</output></div><div><span>COMBO</span><output id="combo">0</output><i class="combo-track"><i id="combo-life"></i></i></div><div><span>MULTI</span><output id="multiplier">×1</output></div><div class="hit-cell"><span>HITS</span><output id="hits">00000</output></div></div></header>
-<div id="field" tabindex="0" role="group" aria-label="弹珠台。左右方向键控制挡板，空格发球。"><img src="./assets/tech-pinball-v4.svg" alt="技术图标弹珠台"></div>
+<div id="field" tabindex="0" role="group" aria-label="弹珠台。左右方向键控制挡板，空格发球。"><img src="./assets/tech-pinball-v5.svg" alt="技术图标弹珠台"></div>
 <footer><div class="controls"><a href="https://github.com/Masterora" aria-label="返回 GitHub">↖ GITHUB</a><button id="motion" aria-pressed="false" disabled>暂停</button><button id="launch" disabled>发球</button></div><span class="hint" id="status">自动演示 · ← → 挡板 / 空格发球</span><div class="paddles"><button id="left" aria-label="左挡板" disabled>←</button><button id="right" aria-label="右挡板" disabled>→</button></div></footer>
-</main><script type="module" src="./pinball.mjs?v=score-1"></script></body></html>
+</main><script type="module" src="./pinball.mjs?v=arcade-2"></script></body></html>

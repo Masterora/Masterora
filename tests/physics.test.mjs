@@ -55,3 +55,15 @@ test('maximum-speed slingshot hits generate effects and do not tunnel',async()=>
   assert.ok(hit,'collision must emit a slingshot effect event');
  }
 });
+
+test('balls can drain behind either trapezoid',()=>{
+ for(const x of [155,1785]){
+  const world=new World();world.balls=world.balls.slice(0,1);const ball=world.balls[0];Object.assign(ball,{x,y:610,vx:0,vy:500,ready:0});
+  for(let i=0;i<160&&ball.generation===0;i++)world.step(STEP,{auto:false});
+  assert.ok(ball.generation>0,'side channel must drain and relaunch the ball');
+ }
+});
+test('guide walls end exactly at the flipper pivots',async()=>{
+ const {walls}=await import('../physics.mjs');const world=new World();
+ for(const f of world.flippers)assert.ok(walls.some(w=>w[2]===f.x&&w[3]===f.y));
+});

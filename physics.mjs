@@ -22,7 +22,7 @@ export function polygonContact(ball,vertices){
  ball.vx-=1.9*speed*nx;ball.vy-=1.9*speed*ny;
  return {x:nearest.x,y:nearest.y,nx,ny};
 }
-const walls=[[130,105,1800,105],[130,105,130,585],[130,585,315,700],[315,700,665,700],[1800,105,1800,585],[1800,585,1615,700],[1615,700,1275,700]];
+export const walls=[[130,105,1800,105],[130,105,130,790],[1800,105,1800,790],[330,650,700,705],[1640,650,1240,705]];
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 export function contact(ball,ax,ay,bx,by,radius=0,restitution=.85,surface={x:0,y:0}){
   const dx=bx-ax,dy=by-ay,len=dx*dx+dy*dy;
