@@ -1,8 +1,2 @@
 <img src="./assets/cyber-terminal-clean.svg" width="100%" alt="Der_Orange — animated terminal" />
-<a href="https://masterora.github.io/Masterora/">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/tech-pinball-v5.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="./assets/tech-pinball-light-v2.svg" />
-    <img src="./assets/tech-pinball-light-v2.svg" width="100%" alt="Technology pinball" />
-  </picture>
-</a>
+<a href="https://masterora.github.io/Masterora/"><img src="./assets/neon-replay.svg" width="100%" alt="Masterora — interactive neon pinball" /></a>

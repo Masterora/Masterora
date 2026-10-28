@@ -1,3 +1,4 @@
+import './build-neon-scene.mjs';
 import {Scoreboard} from '../scoring.mjs';
 // GitHub README cannot execute JS: render a short replay from the same simulator.
 import {readFileSync,writeFileSync} from 'node:fs';
@@ -31,7 +32,7 @@ let overlays='';
 scoreFrames.forEach((f,i)=>{
  const start=(f.time/duration*100).toFixed(5),end=((f.time+.25)/duration*100).toFixed(5);
  css+=`.replay-score-${i}{opacity:0;animation:scoreFrame${i} 24s steps(1,end) infinite}@keyframes scoreFrame${i}{0%,100%{opacity:0}${start}%{opacity:1}${end}%{opacity:0}}`;
- overlays+=`<g class="replay-score replay-score-${i}" fill="#c4ff7b" font-family="monospace" font-size="22"><text x="135" y="33">SCORE  ${String(f.total).padStart(8,'0')}</text><text x="835" y="33">COMBO  ${f.combo}</text><text x="1510" y="33">MULTI  ×${f.multiplier}</text></g>`;
+ overlays+=`<g class="replay-score replay-score-${i}" font-family="monospace" fill="#c5dbe6"><text x="708" y="56" font-size="13" letter-spacing="3">MASTERORA</text><text x="840" y="62" font-size="28">${String(f.total).padStart(8,'0')}</text><text x="1035" y="55" font-size="13">COMBO ${f.combo}</text><rect x="1165" y="32" width="57" height="34" rx="6" fill="#a6f64e"/><text x="1177" y="56" font-size="23" fill="#14261d">×${f.multiplier}</text><circle cx="1260" cy="48" r="15" fill="#1f3440"/><path d="M1256 41v14m8-14v14" stroke="#c2dce6" stroke-width="3"/></g>`;
 });
 explosions.forEach((e,i)=>{
  const start=(e.time/duration*100).toFixed(5),end=((e.time+.65)/duration*100).toFixed(5);
@@ -40,7 +41,7 @@ explosions.forEach((e,i)=>{
  overlays+=`<g class="replay-burst replay-burst-${i}" fill="none" stroke="#e1ffb3" stroke-width="3"><circle cx="${e.x}" cy="${e.y}" r="55"/><circle cx="${e.x}" cy="${e.y}" r="75" stroke-width="1"/>${rays}</g>`;
 });
 css+='@media(prefers-reduced-motion:reduce){*{animation:none!important}.impact,.sling-effect,.replay-burst{opacity:0}.replay-score-0{opacity:1}.moving-ball{display:none}}';
-let svg=readFileSync(new URL('../assets/tech-pinball-v1.svg',import.meta.url),'utf8');
+let svg=readFileSync(new URL('../assets/neon-scene.svg',import.meta.url),'utf8');
 svg=svg.replace('</style>',css+'</style>').replace(/animation:ball(\d) (\d+)s (-?[\d.]+)s/g,(_,i,d,delay)=>`animation:ball${i} 24s ${(-24+Number(delay)+Number(d)).toFixed(3)}s`);
 svg=svg.replace('M1310 700H1700V595','M1275 700H1615L1800 585').replace('M1310 720H1725V595','M1275 720H1625L1820 597');
 svg=svg.replace('Three green pinballs ricochet between nineteen technology bumpers, triggering synchronized kicks, rings and pixel sparks.','A physics-simulated replay with gravity, bumper impacts and moving flippers. Open the interactive page to play.');
@@ -51,7 +52,5 @@ const slingEffects=slings.map((polygon,i)=>{
  return `<g class="sling-effect sling-effect-${i}" fill="none" stroke="#d4ff91" stroke-width="4"><path d="${path}" fill="#9aff36" fill-opacity=".4"/><circle cx="${cx}" cy="${cy}" r="60" stroke-width="2"/>${rays}</g>`;
 }).join('');
 svg=svg.replace('</svg>',slingEffects+overlays+'</svg>');
-writeFileSync(new URL('../assets/tech-pinball-v5.svg' ,import.meta.url),svg);
+writeFileSync(new URL('../assets/neon-replay.svg' ,import.meta.url),svg);
 console.log(`Baked ${duration}s, ${w.hits} hits, ${Math.round(svg.length/1024)} KiB`);
-
-await import('./build-themes.mjs');
