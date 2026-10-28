@@ -1,6 +1,6 @@
 // Coordinates match the SVG playfield. Fixed steps keep collisions frame-rate independent.
 export const STEP=1/240;
-export const bumpers=[...Array.from({length:7},(_,i)=>({x:270+i*232,y:215})),...Array.from({length:7},(_,i)=>({x:370+i*216,y:385})),...Array.from({length:5},(_,i)=>({x:490+i*250,y:550}))];
+export const bumpers=[[260,235],[430,190],[600,230],[770,180],[940,235],[1110,180],[1280,230],[1450,185],[1620,235],[350,410],[550,390],[750,440],[960,390],[1170,440],[1370,390],[1570,410],[720,580],[970,555],[1220,580]].map(([x,y])=>({x,y}));
 export const slings=[[[190,530],[330,650],[250,650],[185,590]],[[1640,650],[1770,530],[1770,590],[1700,650]]];
 // Resolve against the nearest point on the closed polygon, including embedded balls.
 export function polygonContact(ball,vertices){
